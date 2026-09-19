@@ -204,10 +204,14 @@
 }
 
 /* Código */
+/* 0.7em no <pre> (o reveal usa 0.55em) deixa o código do slide com ~21px em vez
+   de ~17px. MUDANÇA DE MÉTRICA INTENCIONAL, a pedido: a fonte estava pequena
+   para projetor. Efeito: bloco de código cerca de 25% mais alto. */
 .deck .reveal pre {
   width: 100%;
   box-shadow: none;
   background: none;
+  font-size: 0.65em;
 }
 
 .deck .reveal pre code {
@@ -265,6 +269,23 @@
 
 .deck .reveal tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* A tabela que o highlight.js cria para numerar linhas NÃO é tabela do conteúdo:
+   nada de borda, zebra, padding ou centralização. Sem este reset o bloco de
+   código com números de linha fica com cara de planilha — a regra de `th, td`
+   acima ganha da regra equivalente do reveal por especificidade. */
+.deck .reveal .hljs-ln,
+.deck .reveal .hljs-ln tbody,
+.deck .reveal .hljs-ln tr,
+.deck .reveal .hljs-ln tr:nth-child(even),
+.deck .reveal .hljs-ln th,
+.deck .reveal .hljs-ln td,
+.deck .reveal .hljs-ln-line {
+  border: 0;
+  background: none;
+  padding: 0;
+  vertical-align: top;
 }
 
 /* Imagens: canto arredondado e sombra (não alteram o tamanho da imagem). */

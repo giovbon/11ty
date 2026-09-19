@@ -31,6 +31,9 @@
   --text-sm: 0.8125rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
+
+  /* código (blocos): um pouco maior que --text-sm, que ficava apertado */
+  --text-code: 0.9375rem;
   --text-xl: 1.375rem;
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem;

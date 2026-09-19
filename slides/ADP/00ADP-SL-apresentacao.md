@@ -2,7 +2,9 @@
 
 <!-- .slide: class="slide-cover" -->
 <p class="slide-cover__kicker">ADS · Application Data Persistance</p>
-<h3>Apresentação</h3>
+
+# Apresentação
+
 <p class="slide-cover__rule"></p>
 <p class="slide-cover__sub">Como ler e construir um DER a partir do mini-mundo.</p>
 <p class="slide-cover__meta"><span>Aula 03</span><span>Prof. Giovani B.</span></p>

@@ -40,9 +40,14 @@ Todas as peças são opcionais: use só o que fizer sentido. O fundo ganha um br
 radial sutil automaticamente (`.slide-cover::before`) — **nenhuma imagem externa
 é necessária**, o que mantém o site 100% offline.
 
-> ⚠️ Markdown **dentro** de tag HTML não é interpretado. `<h1>Modelo **Conceitual**</h1>`
-> mostra os asteriscos; escreva `# Modelo **Conceitual**` (heading de verdade) ou
-> `<h1>Modelo <strong>Conceitual</strong></h1>`.
+> ⚠️ **Linha em branco manda aqui.** Uma linha de HTML abre um bloco que só termina na
+> linha em branco seguinte. Duas consequências práticas:
+>
+> - `# Título` **colado** embaixo de um `<p>` sai literal na tela (`# Título`). Deixe
+>   uma linha em branco antes **e** depois do heading — é o que dá o título grande e
+>   branco da capa;
+> - markdown **dentro** de tag HTML não é interpretado: `<h1>Modelo **x**</h1>` mostra
+>   os asteriscos. Use `<strong>` ou faça do título um heading de verdade.
 
 ---
 
@@ -50,6 +55,11 @@ radial sutil automaticamente (`.slide-cover::before`) — **nenhuma imagem exter
 
 O realce vem do highlight.js, com o tema de `src/assets/styles/syntax.css` — as
 **mesmas cores** do conteúdo da aula e do explorador de código.
+
+> **Tamanho da fonte:** o código do slide sai de `.deck .reveal pre { font-size: 0.65em }`
+> (`src/components/presentation/styles.css`), hoje ~20px. Se aumentar, todo bloco de
+> código fica mais alto: alguns slides do CTT chegam a ~690px e o limite útil do slide
+> é 700px.
 
 ### Realce de linha por passo (a "animação" que você quer)
 
