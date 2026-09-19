@@ -1,0 +1,58 @@
+/* Componente `asciinema` — moldura das gravações de terminal (.cast). */
+
+.asciinema-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+  margin: var(--s6) 0;
+}
+
+.asciinema-wrapper {
+  width: 100%;
+}
+
+.asciinema-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0 0 var(--s3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.asciinema-title::before {
+  content: ">";
+  color: var(--faint);
+}
+
+.asciinema {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  overflow: hidden;
+}
+
+.asciinema-loading,
+.asciinema-erro {
+  display: grid;
+  place-items: center;
+  height: 120px;
+  padding: var(--s4);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+.asciinema-erro {
+  color: var(--danger);
+}
+
+/* O player usa internamente `.ap-player` / `pre.ap-terminal`; só ajustamos o fundo
+   para casar com o tema do site (o tema "asciinema" já é escuro). */
+.asciinema .ap-player {
+  --player-bg: var(--code-bg);
+}

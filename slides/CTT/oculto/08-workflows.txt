@@ -1,0 +1,214 @@
+<!-- .slide: data-background-image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" data-background-size="cover" data-background-opacity="0.4" -->
+
+<div class="glass-box">
+    <h1>Workflows</h1>
+    <img src="https://simpleicons.org/icons/githubactions.svg" alt="Pytest" class="glass-icon imagem-invertida" />
+</div>
+
+---
+
+No GitHub, quando você faz um `git push`, o servidor olha para a pasta `.github/workflows/` à procura de workflows (arquivos `.yml` ou `.yaml`) e dispara todos os arquivos que tenham `on: push` configurado. 
+
+```
+├── Projeto
+│   ├── .github
+│       ├── workflows
+│   │   │   └── work-hello.yml
+```
+
+O act imita esse comportamento, de forma que para executar os workflows você deve criar uma pasta, inicializar um repo com `git init`, criar as pastas `.github/workflows` e dentro de `workflows` colocar seus workflows como arquivos `.yml`
+
+---
+
+O act não roda os comandos diretamente no sistema operacional da sua máquina. Para garantir que o ambiente local seja o mais parecido possível com os "runners" do GitHub, o act exige que você tenha o *Docker* instalado e rodando. Ao ser executado, ele *baixa imagens Docker contendo o ambiente do GitHub Actions e roda seus workflows dentro de contêineres temporários*.
+
+As máquinas reais do GitHub vêm com centenas de ferramentas pré-instaladas (Node, Python, AWS CLI, etc.), o que consome dezenas de gigabytes. Para ser rápido, o act usa por padrão *imagens Docker mais "enxutas"*.
+
+---
+
+Um **evento** aciona um **workflow**, que é composto por um ou mais **jobs**.
+
+Cada job roda em um **runner** (máquina virtual, contêiner ou runner self-hosted) e seus **steps** são executados sequencialmente dentro do mesmo job.
+
+Já os jobs, entre si, podem rodar em paralelo, a menos que haja **dependências** definidas com `needs`
+
+---
+
+## Elementos básicos de um workflow
+
+Elementos básicos de um workflow, a estrutura mínima para um workflow funcionar:
+
+<div style="text-align: center;">
+<img src="../../zSLIDES/img/composição-workflow.png" width="80%" data-preview-image>
+</div>
+
+--
+
+Exemplo de um workflow:
+
+```yml
+name: Hello World # rótulo do workflow
+
+on: #define gatilho
+  workflow_dispatch: # roda manualmente, com botão "Run workflow"
+
+jobs:
+  say-hello-inline-bash: # id do job
+    runs-on: ubuntu-24.04 # define runner
+    steps:
+      - run: echo "Hello GitHub Action Workflow!" # executa comando de linha de comando (shell).
+```
+
+---
+
+## Visão Geral
+
+- **Eventos**: determinam quando um workflow é executado, definido em `on:` no yml do workflow. Ações do GitHub suportam [dezenas de eventos](https://docs.github.com/pt/actions/reference/workflows-and-actions/events-that-trigger-workflows), mas os mais comuns são `push`, `pull_request`, `workflow_dispatch`, e `schedule`. <!-- Você pode filtrar cada evento para que ele seja disparado apenas para as ramificações, tags ou caminhos de arquivo importantes. -->
+
+- **Job (Trabalho)**: uma seção dentro do Workflow, é o conjuntos de passos (*steps*) que executam uma tarefa específica (ex: "Compilar o código", "Rodar testes", "Fazer deploy"). Por padrão, se você tiver vários jobs, eles rodam em paralelo (ao mesmo tempo). Cada Job define em qual tipo de *Runner* ele precisa rodar (ex: `runs-on: ubuntu-latest`).
+
+- **Runner (Executor)**: É o servidor (a máquina real ou virtual) que tem o aplicativo "GitHub Actions runner" instalado. Ele escuta por jobs disponíveis, executa-os um de cada vez e reporta o progresso/logs de volta para o GitHub. Cada *Job* roda em um Runner diferente (ou numa instância limpa do mesmo tipo).
+
+- **Step (Passo)**: São as tarefas que acontecem dentro de um Job que rodam em sequência (uma após a outra). Se um passo falhar, o Job falha.
+
+--
+
+Um **evento** acontece no repositório o que isso dispara um workflow. O **workflow** é apenas a definição das tarefas (jobs) que devem ser executadas. Cada workflow **fica em `.github/workflows/<name>.yml`** (ou `.yaml`) e é expresso como YAML e deve conter pelo menos um job. 
+
+Assim que o workflow começa, ele olha para os **jobs** definidos e decide a ordem deles: *se não houver dependências (`needs`), todos os jobs são liberados para execução ao mesmo tempo*; se houver dependências, um job só começa depois que os anteriores terminarem. Cada job é enviado para um runner. *Um runner só executa um job por vez*, nunca mais de um. Se houver vários jobs paralelos, o GitHub inicia vários runners para executar todos ao mesmo tempo.
+
+Dentro de um job, existem **steps**. Os steps sempre, absolutamente *sempre, rodam em sequência, um depois do outro, na ordem em que aparecem no YAML*. Mesmo se houver vários jobs paralelos, cada job executa seus steps de forma sequencial dentro do seu próprio runner.
+
+--
+
+*Cada Job roda em uma instância de Runner separada e limpa*, para garantir que um job não interfira no outro (isolamento) e o sistema pode *iniciar dois Runners ao mesmo tempo*, se um não depender do outro, para terminar tudo mais rápido (paralelismo).
+
+Se você tiver 10 arquivos `.yml` dentro da pasta `.github/workflows` e todos eles estiverem configurados para disparar no evento de push, o GitHub Actions *tentará iniciar* os 10 simultaneamente assim que você enviar o código. O GitHub utiliza um sistema de *limites de concorrência*. *A depender da sua conta*, se você ultrapassar esses limites, os jobs adicionais ficam no estado "Queued" (Na fila) até que um espaço seja liberado.
+
+--
+
+<div style="text-align: center;">
+<img src="https://kroki.io/nomnoml/svg/eNqL1kvPLMkoTdIvzy_KTsvJLy_Wj1XQ1bWyU4h2LUvNK8mP5YIxFHSBguFQZYY1XNFe-UkgKrgktcAQIgtiGkGYenp6sVyxCmBVRoRVgRlgE2MVbKx0dRWibRKTikuKEpNL7AISixJzUnPyIQqM8CoAmYNPPqg0Ly-1yBDmR7CFMFEjJFEjoLOw-9wITRzicni44LUdYQb5fgAA3mCI6Q==" width="60%" data-preview-image>
+</div>
+
+---
+
+## Dependências
+
+O `needs` no GitHub Actions é usado para estabelecer **dependências entre jobs** e controlar a ordem de execução, uma vez que, por padrão, todos os jobs são executados em paralelo. Quando um job é designado com `needs`, ele deve aguardar a conclusão bem-sucedida de outros jobs antes de iniciar. O `needs` transforma a execução paralela padrão dos jobs em um fluxo estruturado (sequencial), onde cada passo depende do anterior.
+
+--
+
+```yaml
+name: Usando needs
+on: workflow_dispatch
+
+jobs:
+  job-1:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Um job consiste em"
+      - run: echo "uma ou mais etapas"
+      - run: echo "que são executadas sequencialmente"
+      - run: echo "dentro do mesmo ambiente de computação"
+  job-2:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Vários jobs podem rodar em paralelo"
+  job-3:
+    runs-on: ubuntu-latest
+    needs:
+      - job-1
+      - job-2
+    steps:
+      - run: echo "Eles também podem depender uns dos outros..."
+  job-4:
+    runs-on: ubuntu-latest
+    needs:
+      - job-2
+      - job-3
+    steps:
+      - run: echo "...para formar um grafo direcionado acíclico (DAG)"
+```
+
+---
+
+# Act
+
+O act é uma ferramenta que *simula o ambiente do GitHub Actions* usando containers Docker. O act é uma ferramenta que lê o seu arquivo YAML e usa a API do Docker para criar containers temporários na sua máquina. *Cada container finge ser uma VM de execução do GitHub*.
+
+O GitHub Actions "verdadeiro" roda em máquinas virtuais com o Ubuntu (ou Windows/Mac) que têm 70GB ou mais de ferramentas pré-instaladas (Java, Python, PHP, Rust, Android SDK, Chrome, Firefox, etc.). Baixar uma imagem Docker de 70GB toda vez que você fosse testar algo localmente seria inviável. Por isso o act criou categorias:
+
+- **Large**: Imagem gigante (20GB+), contém quase tudo que o GitHub Actions tem. Pesada.
+- **Medium**: O equilíbrio ideal. Tem as ferramentas mais comuns (node, git, etc). (Recomendado)
+- **Micro**: Só o básico do Linux. Rápido, mas falha se seu script precisar de ferramentas extras.
+
+--
+
+## Uso
+
+Mesmo que você não vá subir isso para o GitHub agora, o act precisa que o ambiente local seja um repositório Git, para poder preencher as variáveis de ambiente que o GitHub Actions normalmente teria. Dessa forma, inicialize um repositório:
+
+```bash
+git init
+git add .
+git commit -m "initial commit"
+```
+No GitHub, quando você faz um git push, o servidor olha para a pasta `.github/workflows/` e dispara todos os arquivos que tenham `on: push` configurado. O act foi feito para imitar o comportamento do GitHub.
+
+Por padrão, o act segue rigorosamente a estrutura do GitHub. Ele procura arquivos `.yml` ou `.yaml` dentro de: `./.github/workflows/`
+
+--
+
+## Comandos
+
+```bash
+# lista todos os workflows e jobs detectados no seu projeto
+act -l
+# checa se o arquivo YAML está com a sintaxe correta
+act -n
+# executará todos os jobs com evento de push
+act
+# roda os workflows por evento
+act pull_request
+# roda workflow inteiro específico, pode estar em qualquer pasta
+act -W .github/workflows/meu-teste.yml
+# filtra a saída do terminal para exibir apenas o que o script imprimiu
+act -W .github/workflows/meu-teste.yml | grep "|" 
+# executa workflow definindo qual imagem Docker deve ser 
+# usada para rodar os jobs
+act -W ./hello.yml -P ubuntu-latest=node:slim
+# roda um job específico
+act -j [ID]
+```
+
+--
+
+### `act -l`
+
+O comando `act -l` serve como um mapeamento do repositório, *listando todos os workflows e jobs detectados* na estrutura de pastas. Ao ser executado, ele faz uma varredura no diretório `.github/workflows`, processando arquivos YAML e gerando uma tabela com informações como Job ID, Job Name, Workflow Name, Workflow File e Events.
+
+Essa função é crucial para *validar se os arquivos estão sendo reconhecidos corretamente* pelo act antes de subir qualquer container Docker, além de *detectar erros de sintaxe*.
+
+--
+
+Exemplo de saída do comando `act -l`:
+
+```bash
+Stage  Job ID                 Job name               Workflow name      Workflow file      Events           
+0      job-1                  job-1                  Dependencias.yaml  Dependencias.yaml  workflow_dispatch
+0      job-2                  job-2                  Dependencias.yaml  Dependencias.yaml  workflow_dispatch
+0      say-hello-inline-bash  say-hello-inline-bash  Hello World        Hello-World.yml    workflow_dispatch
+1      job-3                  job-3                  Dependencias.yaml  Dependencias.yaml  workflow_dispatch
+2      job-4                  job-4                  Dependencias.yaml  Dependencias.yaml  workflow_dispatch
+```
+
+--
+
+Colunas:
+- **Stage**: Jobs no Stage 0 rodam primeiro (e em paralelo). Stage 1 espera o 0 terminar, e assim por diante.
+- **Job ID**: É o identificador técnico usado no comando `act -j [ID]`.
+- **Job name**: Nome amigável que aparece na interface (se não definido, repete o ID).
+- **Workflow name**: Nome do workflow definido no campo name, do topo do seu arquivo YAML.
+- **Workflow file**: O nome real do arquivo `.yml` na sua pasta de workflows.
+- **Events**: O evento quer vai rodar o job.

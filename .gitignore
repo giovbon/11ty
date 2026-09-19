@@ -1,0 +1,15 @@
+# dependências
+node_modules/
+
+# saída do build
+_site/
+
+# artefatos gerados dentro de src (libs vendorizadas são versionadas junto)
+src/assets/static/app.js
+src/assets/static/app.js.map
+src/assets/static/app.css
+src/assets/static/app.css.map
+
+# cache do Eleventy
+.cache/
+.tmp-tests/

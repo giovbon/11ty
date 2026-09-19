@@ -1,0 +1,251 @@
+/* Componente `presentation` — moldura do deck + tema do reveal no escuro. */
+
+.decks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+  margin: var(--s6) 0;
+}
+
+.deck {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.deck .reveal {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  font-family: var(--font-sans);
+  font-size: 28px;
+}
+
+.deck .reveal .slides {
+  text-align: left;
+}
+
+.deck .reveal .slides section {
+  text-align: left;
+}
+
+/* Botão de tela cheia (adicionado pelo client.js) */
+.deck .deck__fullscreen {
+  position: absolute;
+  left: var(--s3);
+  bottom: var(--s3);
+  z-index: 30;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity var(--transition), background var(--transition);
+}
+
+.deck .reveal:hover .deck__fullscreen,
+.deck .deck__fullscreen:focus-visible {
+  opacity: 1;
+}
+
+.deck .deck__fullscreen:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* Controles e progresso no acento do site */
+.deck .reveal .controls {
+  color: var(--accent);
+}
+
+.deck .reveal .progress {
+  color: var(--accent);
+  height: 3px;
+}
+
+.deck .reveal .slide-number {
+  background: transparent;
+  color: var(--muted);
+}
+
+/* Tipografia do deck */
+.deck .reveal h1,
+.deck .reveal h2,
+.deck .reveal h3 {
+  color: var(--accent);
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+.deck .reveal h1 {
+  font-size: 1.8em;
+}
+
+.deck .reveal h2 {
+  font-size: 1.5em;
+}
+
+.deck .reveal h3 {
+  font-size: 1.2em;
+}
+
+.deck .reveal p,
+.deck .reveal li {
+  line-height: 1.35;
+}
+
+.deck .reveal p {
+  margin-bottom: 0.5em;
+}
+
+.deck .reveal ul,
+.deck .reveal ol {
+  display: block;
+  margin-left: 1.2em;
+}
+
+.deck .reveal em {
+  color: #4e9ffc;
+  background-color: var(--code-bg);
+  padding: 0 8px;
+  border-radius: 5px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.deck .reveal strong {
+  color: #d6a949;
+}
+
+.deck .reveal a {
+  color: var(--accent);
+}
+
+/* Código */
+.deck .reveal pre {
+  width: 100%;
+  box-shadow: none;
+  background: none;
+}
+
+.deck .reveal pre code {
+  max-height: 520px;
+  padding: 20px;
+  background-color: #0e0e0e;
+  color: #f8f8f2;
+  font-family: var(--font-mono);
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+.deck .reveal :not(pre) > code {
+  background-color: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.deck .reveal .hljs-ln-numbers {
+  color: #555;
+  padding-right: 15px;
+  border-right: 1px solid #333;
+  text-align: right;
+  min-width: 1.5em;
+}
+
+.deck .reveal .hljs-ln-code {
+  padding-left: 15px;
+}
+
+/* Tabelas */
+.deck .reveal table {
+  margin: 1em auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.65em;
+}
+
+.deck .reveal th,
+.deck .reveal td {
+  padding: 8px 12px;
+  line-height: 1.35;
+  vertical-align: middle;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.deck .reveal th {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+  font-weight: 700;
+  text-align: left;
+}
+
+.deck .reveal tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Blocos usados pelos slides (capa) */
+.deck .reveal .glass-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+  margin: 30px auto;
+  padding: 25px 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(10px) saturate(180%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.64);
+  animation: deck-float 8s ease-in-out infinite;
+}
+
+.deck .reveal .glass-box h1,
+.deck .reveal .glass-box h2,
+.deck .reveal .glass-box h3,
+.deck .reveal .glass-box p {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.84);
+}
+
+.deck .reveal .glass-box h1 {
+  font-size: 3.2em;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.deck .reveal .glass-icon {
+  width: 90px;
+  height: auto;
+}
+
+.deck .reveal .imagem-invertida {
+  filter: invert(100%);
+  width: 100px;
+  height: auto;
+}
+
+@keyframes deck-float {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+/* Deck recebendo o teclado (quando há mais de um na página) */
+.deck .reveal[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}

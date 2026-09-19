@@ -1,0 +1,68 @@
+/* Tema de syntax highlight (highlight.js) — usado pelo conteúdo, pelo deck e pelo
+   explorador de código. Cores escolhidas para contraste sobre --code-bg. */
+
+.hljs {
+  color: #e6edf3;
+  background: transparent;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--faint);
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag,
+.hljs-operator {
+  color: #ff7b72;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute {
+  color: #a5d6a7;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: #f0b775;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-tag {
+  color: var(--accent);
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: #c792ea;
+}
+
+.hljs-meta,
+.hljs-deletion,
+.hljs-params {
+  color: var(--muted);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}

@@ -1,0 +1,324 @@
+/* Componente `submission` — cartão de entrega de atividade. */
+
+.submission-container {
+  display: flex;
+  justify-content: center;
+  margin: var(--s6) 0;
+}
+
+.submission-card {
+  width: 100%;
+  max-width: 520px;
+  padding: var(--s5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.submission-card .hidden {
+  display: none !important;
+}
+
+/* Cabeçalho */
+.submission-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-bottom: var(--s5);
+}
+
+.submission-card .icon-wrapper {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.submission-card .header-text h3 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.submission-card .header-text .subtitle {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.submission-card .highlight-activity {
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.submission-card .back-to-selection {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.submission-card .back-to-selection:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+/* Lista de atividades */
+.submission-card .activity-list {
+  display: grid;
+  gap: var(--s2);
+}
+
+.submission-card .select-activity-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.submission-card .select-activity-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.submission-card .select-activity-btn svg {
+  color: var(--muted);
+  flex: none;
+}
+
+/* Campos */
+.submission-card .input-group + .input-group {
+  margin-top: var(--s4);
+}
+
+.submission-card .input-group > label {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-bottom: var(--s2);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.submission-card input[type="text"],
+.submission-card input[type="url"],
+.submission-card textarea {
+  width: 100%;
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  transition: border-color var(--transition);
+}
+
+.submission-card input:focus,
+.submission-card textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.submission-card textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.submission-card .ra-validation-status {
+  margin-top: var(--s1);
+  font-size: var(--text-xs);
+  min-height: 1.1em;
+}
+
+.submission-card .ra-validation-status.valid {
+  color: var(--ok);
+}
+
+.submission-card .ra-validation-status.invalid {
+  color: var(--danger);
+}
+
+.submission-card .student-name-display {
+  margin-top: var(--s3);
+  padding: var(--s3);
+  border: 1px solid var(--ok);
+  border-radius: var(--radius);
+  background: rgba(158, 206, 106, 0.08);
+}
+
+.submission-card .confirmed-name {
+  color: var(--ok);
+  font-weight: 600;
+}
+
+/* Anexo */
+.submission-card .file-input-hidden {
+  display: none;
+}
+
+.submission-card .file-pick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.submission-card .file-pick-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.submission-card .file-info-container {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-top: var(--s2);
+}
+
+.submission-card .file-name-display {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+.submission-card .clear-file-btn {
+  display: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  color: var(--danger);
+  cursor: pointer;
+}
+
+.submission-card .file-hint {
+  display: block;
+  margin-top: var(--s2);
+  color: var(--faint);
+  font-size: var(--text-xs);
+}
+
+/* Prazo */
+.submission-card .deadline-info {
+  margin-bottom: var(--s4);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.submission-card .deadline-info.late {
+  border: 1px solid var(--danger);
+  background: rgba(247, 118, 142, 0.1);
+  color: var(--danger);
+}
+
+.submission-card .deadline-info.on-time {
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* Status e comprovante */
+.submission-card .status-message {
+  display: none;
+  margin-top: var(--s4);
+  padding: var(--s3);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.submission-card .status-message.error {
+  border: 1px solid var(--danger);
+  background: rgba(247, 118, 142, 0.1);
+  color: var(--danger);
+}
+
+.submission-card .status-message.success {
+  border: 1px solid var(--ok);
+  background: rgba(158, 206, 106, 0.1);
+  color: var(--ok);
+}
+
+.submission-card .receipt-container:not(:empty) {
+  margin-top: var(--s3);
+}
+
+.submission-card .download-receipt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.submission-card .download-receipt-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Enviar */
+.submission-card .submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  width: 100%;
+  margin-top: var(--s5);
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #0b0d10;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter var(--transition);
+}
+
+.submission-card .submit-btn:hover {
+  filter: brightness(1.08);
+}
+
+.submission-card .submit-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

@@ -1,0 +1,11 @@
+{% if item %}
+  <p class="meta">
+    <time datetime="{{ item.date | dataISO }}">{{ item.date | data }}</time>
+    <span class="meta__dot" aria-hidden="true">·</span>
+    <span>{{ item.readingMinutes }} min de leitura</span>
+    {% for tag in item.tags %}
+      <span class="meta__dot" aria-hidden="true">·</span>
+      <a class="chip" href="{{ ('/tags/' + tag + '/') | link }}">#{{ tag }}</a>
+    {% endfor %}
+  </p>
+{% endif %}

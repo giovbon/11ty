@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="{{ site.lang }}" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% if item %}{{ item.title }} · {% elif folder %}{{ folder.name }} · {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if item and item.frontmatter.description %}{{ item.frontmatter.description }}{% else %}{{ site.description }}{% endif %}" />
+    <meta name="color-scheme" content="dark" />
+    {# Base do site: usada pelos scripts de cliente (deploy em subpasta) #}
+    <meta name="base-url" content="{{ '/' | link }}" />
+    <link rel="stylesheet" href="{{ '/static/app.css' | link }}" />
+    {% block head %}{% endblock %}
+    <script type="module" src="{{ '/static/app.js' | link }}"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <div class="shell">
+      {% include "partials/sidebar.njk" %}
+      <main id="conteudo" class="main">
+        {% block content %}{{ content | safe }}{% endblock %}
+        {% include "partials/footer.njk" %}
+      </main>
+      <aside class="aside" aria-label="Nesta página">
+        {% block aside %}{% endblock %}
+      </aside>
+    </div>
+  </body>
+</html>

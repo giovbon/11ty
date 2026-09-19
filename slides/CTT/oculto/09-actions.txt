@@ -1,0 +1,138 @@
+<!-- .slide: data-background-image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" data-background-size="cover" data-background-opacity="0.4" -->
+
+<div class="glass-box">
+    <h1>actions</h1>
+    <img src="https://simpleicons.org/icons/githubactions.svg" alt="Pytest" class="glass-icon imagem-invertida" />
+</div>
+
+---
+
+Lembrando...
+
+**Integração Contínua ou Continuous Integration (CI)** é a prática de *automatizar a verificação do código sempre que uma nova alteração é enviada para o repositório* (utilizando o gatilho` on: [push]`). Essa abordagem aumenta a segurança no desenvolvimento em equipe, permitindo que apenas o código que passa nas validações seja aceito.
+
+--
+
+<div style="text-align: center;">
+<img src="https://kroki.io/nomnoml/svg/eNqFkbFKA0EQhvt7ioFrtFAiXEAlBCTJaSkRtQhX7G1mkyXHTZjdjYoGbOwEa6OiYOED2NjnTfIC-gje3onBQtLN7nz_zM_8obFMI9yFMI7j7U4rCJXOsuIZ1aNaVAuCXkNIS9yENhrMJ5RNsE-cwEYTegNtYezMMCmw37rsNPrCilQYbEIXx2S0nb-zJtjX9sClnl9BlFOqGvak1ZQbuAoAeovZ_efHHXRdniPD2nHqcuvWK_7r-eHFNzvnKN38bf5K0Cc4JR6pjM4SL1-BVOblkLQsjJ0ga6WlKDkv9xP-fnrB4vEGjpxEY8gvmF3DIVNuCcaCBbTayT-yp1uIRTYUS1dtnIAkZj1AQOZiZ3Gq0NiLrEhoswwCLuEnIdxSdYUwXQKV7yWhlNqREUy_Afa4s7g=" width="50%" data-preview-image>
+</div>
+
+---
+
+As **Actions** são ferramentas de *automação que configuram um ambiente limpo para codificação* (ex: Python), garantindo a execução consistente de scripts e testes, permitindo que o GitHub verifique automaticamente a integridade do código a cada alteração. Eles podem realizar:
+
+- **Instalação de Dependências**: Instalar bibliotecas ou ferramentas necessárias.
+- **Compilação de Código**: Compilar o código-fonte para gerar executáveis ou outros artefatos.
+- **Execução de Testes**: Rodar testes unitários ou de integração para verificar se o código funciona conforme esperado.
+- **Implantação**: Publicar o código em um servidor ou em serviços de nuvem (CD).
+
+--
+
+Imagine que o *Runner* (a máquina que o GitHub te empresta) é um *computador novo, formatado* com Linux. Ele não tem seu código, não tem Python instalado e não tem suas bibliotecas. Para não ter que digitar 20 linhas de comandos Linux toda vez para configurar esse ambiente, a comunidade e o próprio GitHub criaram Actions.
+
+**Actions** são *pacotes de código reutilizáveis criados pela comunidade ou pelo GitHub*. Elas servem para encapsular tarefas frequentes e repetitivas, permitindo que você monte seu pipeline como se fossem blocos de Lego.
+
+---
+
+Exemplo:
+
+``` yaml
+name: Teste de API
+
+on: [push]
+
+jobs:
+  verificar-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi[standard] pytest httpx
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Rodar Testes
+        run: pytest test_main.py
+```
+
+--
+
+```yml
+- uses: actions/checkout@v4
+```
+
+- O Runner do GitHub liga, mas ele não sabe nada sobre o seu projeto. Ele não tem os seus arquivos, não tem a sua pasta, está totalmente vazio.
+- A `actions/checkout` é a Action mais importante e usada do GitHub. Ela *entra no seu repositório e copia todo o seu código para dentro do Runner*.
+- Em vez de você ter que digitar comandos como `git init`, `git remote add origin`, `git fetch` e `git pull`,ele faz tudo isso por você de forma segura. O `@v4` indica apenas que estamos usando a *versão* 4 desta Action (a mais atual, com correções de bugs).
+
+--
+
+```yml
+- name: Setup Python
+  uses: actions/setup-python@v5
+  with:
+    python-version: '3.11'
+    cache: 'pip'
+```
+
+- O computador zerado do GitHub tem um Linux básico. Ele pode até ter alguma versão do Python lá, mas talvez não seja a versão que o seu projeto precisa para rodar sem erros.
+- A `actions/setup-python` vai até os servidores, *baixa a versão do Python que você deseja, instala no Runner e configura as variáveis de ambiente* (o `PATH`) para que o terminal entenda o comando `python`. O `name: Setup Python` é apenas o *rótulo visual* que vai aparecer na tela do GitHub para ficar bonito e organizado quando o fluxo rodar.
+
+--
+
+A `setup-python` é uma Action que permite *customização*. Usamos a palavra-chave `with` para passar "parâmetros" ou "configurações" para dentro dela.
+
+- `python-version: '3.11'`: Garante que não haverá o famoso erro "Na minha máquina funciona". Se você desenvolveu na versão 3.11 no seu computador, o GitHub vai testar exatamente na versão 3.11 na nuvem.
+
+- `cache: 'pip'`: Baixar dependências da internet (como FastAPI, Pytest, Pandas, etc.) toda vez que alguém fizer um `push` demora muito tempo. E tempo em CI/CD custa dinheiro (minutos de processamento). Ao ativar o `cache: 'pip'`, você manda o GitHub Actions fazer o seguinte: *"Na primeira vez, baixe tudo da internet e guarde em uma pasta secreta. No próximo `push`, antes de baixar de novo, olhe nessa pasta e pegue os arquivos que já estão prontos"*. Isso transforma um processo de instalação que levaria minutos em algo de poucos segundos.
+
+--
+
+O trecho a seguir constrói a aplicação instalando as *dependências* necessárias, como o framework FastAP:
+
+```yml
+- name: Instalar dependências
+  run: |
+    python -m pip install --upgrade pip
+    pip install fastapi[standard] pytest httpx
+    if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+```
+
+Quando usamos `run`, estamos dizendo ao GitHub: 'Sente na frente desse computador e digite exatamente esses comandos no terminal, um por um'."
+Aqui, primeiro atualizamos o instalador (`pip`), depois instalamos o framework (`FastAPI`) e a ferramenta de testes (`pytest`). Depois, se o arquivo `requirements.txt` existir ele instala as dependências listadas nele, se não existir ele segue adiante.
+
+--
+
+O trecho a seguir vai rodar os *testes* definidos em `test_main.py`
+
+```yml
+- name: Rodar Testes
+  run: pytest test_main.py
+```
+
+O comando `pytest test_main.py` vai executar os nossos *testes automatizados*. 
+
+O GitHub Actions é "burro" no sentido de que *ele não entende o seu código Python*. Ele só entende duas coisas: 
+- ✅ Sucesso (Código 0) ou 
+- ❌ Erro (Qualquer código diferente de 0). 
+
+Se o Pytest rodar e todos os testes passarem, ele avisa o GitHub que deu tudo certo. Se um único teste falhar, o Pytest emite *um sinal de erro*, o Runner para imediatamente de funcionar, e o GitHub *bloqueia a sua atualização*.
+
+---
+
+Quando o fluxo termina, o GitHub nos dá um retorno visual imediato direto no repositório e no Pull Request.
+
+- ✅ **Verde (Passed):** Todos os passos funcionaram e os testes do Pytest passaram. O código é seguro para ser integrado.
+- ❌ **Vermelho (Failed):** Algum passo quebrou ou um teste falhou. O GitHub bloqueia a integração e o desenvolvedor precisa ler os Logs para consertar o código.
+
+<div style="text-align: center;">
+<img src="../../zSLIDES/img/ci-cd-githubactions.png" width="50%" data-preview-image>
+</div>

@@ -1,0 +1,96 @@
+<!-- .slide: data-background-image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" data-background-size="cover" data-background-opacity="0.4" -->
+
+<div class="glass-box">
+    <h1>Intro ao Github Actions</h1>
+    <img src="https://simpleicons.org/icons/githubactions.svg" alt="Pytest" class="glass-icon imagem-invertida" />
+</div>
+
+---
+
+O GitHub Actions é, na prática, o "motor de *automação*" que roda diretamente dentro dos seus repositórios no GitHub. Ele serve para executar scripts e *fluxos de trabalho (workflows) toda vez que algo acontece no seu projeto*. 
+
+No mercado de trabalho e no dia a dia dos desenvolvedores, ele é usado principalmente para *CI/CD* (Integração Contínua e Entrega/Implantação Contínua) e para *automação de tarefas*.
+
+--
+
+## Integração Contínua 
+Ou CI (Continuous Integration)
+É o uso mais comum. Serve para garantir que o *código novo não vai quebrar o que já está funcionando*.
+
+- *Testes Automáticos*: Toda vez que alguém abre um Pull Request (PR), o GitHub Actions baixa o código, instala as dependências e roda todos os testes (unitários, de integração, etc.). Se os testes falharem, o GitHub bloqueia o PR, impedindo que o código ruim vá para a branch principal.
+
+- *Linting e Qualidade de Código*: Verifica automaticamente se o código segue os padrões de formatação da equipe (usando ferramentas como ESLint, Prettier, SonarQube).
+
+- *Build do Projeto*: Testa se o projeto consegue ser compilado com sucesso antes de aceitar as mudanças.
+
+--
+
+## Implantação Contínua
+Ou CD (Continuous Deployment/Delivery)
+Usado para *colocar o código no ar automaticamente* sem precisar que um humano faça o processo manual.
+
+- *Deploy em Produção*: Assim que um código é aprovado e mergeado na branch main, o Actions pode pegar esse código, fazer o build e enviá-lo diretamente (e automaticamente) para os servidores (AWS, Azure, Vercel, Heroku, etc.).
+
+- *Publicação de Pacotes*: Se você mantém uma biblioteca, o Actions pode publicar a nova versão automaticamente no NPM (para JavaScript), no PyPI (para Python) ou criar uma imagem no Docker Hub toda vez que você cria uma nova tag de versão no GitHub.
+
+--
+
+## Automação de Tarefas do Repositório
+Serve para facilitar a gestão de projetos e times.
+
+- *Gestão de Issues e PRs*: Fechar Issues automaticamente que estão sem resposta há muito tempo, adicionar labels (etiquetas) baseadas no título do PR, ou atribuir revisores de código automaticamente.
+
+- *Notificações*: Mandar uma mensagem automática no Slack, Discord ou Microsoft Teams avisando que um deploy foi feito com sucesso ou que o servidor quebrou.
+
+- *Mensagens de Boas-vindas*: Comentar automaticamente no primeiro PR de um novo contribuidor agradecendo a ajuda.
+
+--
+
+## Tarefas Agendadas (Cron Jobs)
+Você pode configurar o GitHub Actions para rodar *scripts em horários específicos*, como se fosse um despertador.
+
+Exemplos: Rodar um script de web scraping toda meia-noite para atualizar uma base de dados, gerar um relatório semanal de bugs ou fazer rotinas de backup.
+
+---
+
+## Ciclo de vida do CI/CD
+
+<div style="text-align: center;">
+<img src="../../zSLIDES/img/ciclo-ci-cd.png" width="80%" data-preview-image>
+</div>
+
+Esta imagem ilustra o clássico ciclo de vida do CI/CD. Esse diagrama é o coração da cultura DevOps na engenharia de software. O formato em símbolo do infinito (∞) representa que *o desenvolvimento, a entrega e a manutenção de um software são processos contínuos e cíclicos, onde o fim de um ciclo alimenta o planejamento do próximo*.
+
+--
+
+**Lado Esquerdo (Azul): CI - Integração Contínua**
+
+Esta fase foca em ajudar as equipes de desenvolvimento a mesclar e validar as alterações de código de forma frequente e segura.
+
+- **Plan** (*Planejar*): A equipe define o que precisa ser feito, como novas funcionalidades, melhorias ou correções de bugs.
+- **Code** (*Codificar*): Os desenvolvedores escrevem o código-fonte para atender ao que foi planejado.
+- **Build** (*Construir/Compilar*): O código escrito é agrupado e transformado em um pacote executável.
+- **Test** (*Testar*): Testes automatizados rodam para garantir que o código novo funciona corretamente e não quebrou nada que já estava funcionando no sistema.
+
+<div style="text-align: center;">
+<img src="../../zSLIDES/img/ciclo-ci-cd.png" width="10%" data-preview-image>
+</div>
+
+--
+
+**Lado Direito (Laranja/Amarelo): CD - Entrega/Implantação Contínua**
+
+Esta fase foca em pegar o código que já foi validado e entregá-lo aos usuários finais de maneira rápida, automatizada e sustentável.
+
+- **Release** (*Liberar/Lançar*): O pacote aprovado nos testes é versionado e preparado para ser enviado ao ambiente de produção.
+- **Deploy** (*Implantar*): O software é de fato colocado "no ar", ficando disponível para os usuários finais.
+- **Operate** (*Operar*): Envolve a infraestrutura e a gestão diária para garantir que a aplicação continue funcionando e acessível.
+- **Monitor** (*Monitorar*): O acompanhamento constante da saúde do sistema, performance e experiência do usuário. Qualquer erro encontrado ou feedback recebido aqui volta direto para a etapa de planejamento (Plan), reiniciando o ciclo.
+
+<div style="text-align: center;">
+<img src="../../zSLIDES/img/ciclo-ci-cd.png" width="10%" data-preview-image>
+</div>
+
+--
+
+Seguir esse fluxo permite que as empresas lancem atualizações de software dezenas de vezes por dia com alta segurança, em vez de fazerem lançamentos gigantes e arriscados a cada poucos meses.

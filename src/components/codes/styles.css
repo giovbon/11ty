@@ -1,0 +1,197 @@
+/* Componente `codes` — explorador de arquivos + visualizador de código. */
+
+.code-explorer {
+  --code-font-size: 13px;
+  position: relative;
+  display: flex;
+  height: 520px;
+  margin: var(--s5) 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.code-explorer.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  height: 100vh;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Barra de ações (aparece no hover ou quando algo dentro está em foco) */
+.explorer-actions {
+  position: absolute;
+  right: var(--s3);
+  bottom: var(--s3);
+  z-index: 2;
+  display: flex;
+  gap: var(--s1);
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(14, 15, 17, 0.85);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.code-explorer:hover .explorer-actions,
+.code-explorer:focus-within .explorer-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.explorer-actions .action-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.explorer-actions .action-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.explorer-actions .action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Árvore de arquivos */
+.tree-panel {
+  flex: 0 0 260px;
+  padding: var(--s3) 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.tree-title {
+  margin: 0 var(--s3) var(--s3);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--border);
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-list .tree-list {
+  margin-left: var(--s3);
+  padding-left: var(--s2);
+  border-left: 1px solid var(--border);
+}
+
+.tree-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 3px var(--s3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.tree-item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.tree-item.file.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.tree-item .folder-icon {
+  color: var(--faint);
+  font-size: 0.8em;
+  width: 0.8em;
+}
+
+.tree-item .item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-content {
+  display: none;
+}
+
+.folder-content.open {
+  display: block;
+}
+
+/* Visualizador */
+.viewer-panel {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--code-bg);
+}
+
+.viewer-header {
+  padding: var(--s2) var(--s4);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.viewer-header .current-filename {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.code-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.code-content pre {
+  margin: 0;
+  padding: var(--s4);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.code-content code {
+  display: block;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #e6edf3;
+  font-family: var(--font-mono);
+  font-size: var(--code-font-size);
+  line-height: 1.55;
+  white-space: pre;
+}

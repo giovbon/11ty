@@ -1,0 +1,85 @@
+name: Deploy site-11ty to GitHub Pages
+
+# Este workflow pertence ao repositório do site-11ty (giovbon/impacta-11ty),
+# que é INDEPENDENTE do repositório do Quartz. O Pages de lá publica só este site.
+#
+# Publicado em: https://giovbon.github.io/impacta-11ty/
+# (por isso BASE_URL=/impacta-11ty/ — se o repositório tiver outro nome, ajuste aqui)
+#
+# Não usa nenhum secret: a autenticação é feita pelo OIDC do próprio Actions.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "content/**"
+      - "slides/**"
+      - "mindmaps/**"
+      - "codes/**"
+      - "scripts/**"
+      - "test/**"
+      - "eleventy.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - ".node-version"
+      - ".github/workflows/deploy.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Um deploy por vez; não cancela o que já está publicando.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: /impacta-11ty/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Testes (módulos puros)
+        run: npm test
+
+      - name: Build (vendor + assets + Eleventy)
+        run: npm run build
+
+      - name: Conferir a saída
+        run: |
+          test -f _site/index.html || { echo "::error::_site/index.html não foi gerado"; exit 1; }
+          echo "Páginas geradas: $(find _site -name '*.html' | wc -l)"
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar o site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

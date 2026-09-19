@@ -1,0 +1,24 @@
+{% extends "layouts/base.njk" %}
+
+{% block content %}
+  {% include "partials/breadcrumbs.njk" %}
+  <article class="prose">
+    <h1 class="page-title">{{ folder.name }}</h1>
+    <ul class="card-list">
+      {% for child in folder.children %}
+        <li class="card-list__item">
+          <a class="card-list__link" href="{{ child.url | link }}">
+            {% if child.kind == 'folder' %}{{ child.name }}{% else %}{{ child.title }}{% endif %}
+          </a>
+          {% if child.kind == 'folder' %}
+            <span class="chip">pasta</span>
+          {% elif child.frontmatter.description %}
+            <p class="card-list__desc">{{ child.frontmatter.description }}</p>
+          {% endif %}
+        </li>
+      {% else %}
+        <li class="card-list__item">Nenhum material publicado nesta pasta.</li>
+      {% endfor %}
+    </ul>
+  </article>
+{% endblock %}

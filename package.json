@@ -1,0 +1,26 @@
+{
+  "name": "impacta-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Site estático de materiais de aula (Impacta) — Eleventy",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run clean && npm run vendor && npm run build:assets && eleventy",
+    "build:assets": "node scripts/build-assets.mjs",
+    "vendor": "node scripts/vendor-libs.mjs",
+    "test": "node --test \"test/**/*.test.js\"",
+    "clean": "node -e \"require('fs').rmSync('_site',{recursive:true,force:true})\""
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.0",
+    "d3": "^7.9.0",
+    "esbuild": "^0.25.0",
+    "gray-matter": "^4.0.3",
+    "jszip": "^3.10.2",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "markmap-lib": "^0.18.12",
+    "markmap-view": "^0.18.12"
+  }
+}

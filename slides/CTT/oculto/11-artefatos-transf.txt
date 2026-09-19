@@ -1,0 +1,181 @@
+<!-- .slide: data-background-image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" data-background-size="cover" data-background-opacity="0.4" -->
+
+<div class="glass-box">
+    <h1>Artefatos e gatilhos</h1>
+    <img src="https://simpleicons.org/icons/githubactions.svg" alt="Pytest" class="glass-icon imagem-invertida" />
+</div>
+
+---
+
+# Artefatos
+
+Este assunto aborda um dos desafios fundamentais do CI/CD: a *natureza efêmera dos executores*. No GitHub Actions, cada Job roda em uma máquina virtual (ou container) "limpa" que é destruída assim que o trabalho termina. Sem artefatos, qualquer arquivo gerado (um binário, um relatório de teste ou um log) morreria junto com a máquina.
+
+<div style="text-align: center;">
+<img src="../../zSLIDES/img/esquema-cria-destroi.png" width="80%" data-preview-image>
+</div>
+
+--
+
+Assim, use artefatos para *compartilhar dados entre jobs em um fluxo e armazene dados quando o workflow estiver concluído*.
+
+Função:
+
+- **Compartilhe dados entre Jobs**: O Job A produz um arquivo e o Job B o utiliza.
+- **Salvar resultados**: Após o fim do workflow, você pode baixar o arquivos para ver o que aconteceu.
+
+
+Ao rodar workflows com artefatos localmente usando o act, ele geralmente simula o armazenamento criando uma pasta local. Isso permite que você teste se a lógica de "passagem de arquivos" entre seus Jobs está funcionando corretamente antes de enviar para o GitHub real.
+
+---
+
+Exemplo:
+
+```yaml
+name: Aprendendo Artefatos
+
+on: 
+  push:
+  workflow_dispatch:
+
+jobs:
+  gerador:
+    name: Produzir Arquivo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Criar relatório de teste
+        run: echo "Sucesso! Artefato gerado em $(date)" > relatorio.txt
+
+      - name: Salvar Artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: meu-pacote
+          path: relatorio.txt
+
+  consumidor:
+    name: Ler Arquivo
+    runs-on: ubuntu-latest
+    needs: [gerador]
+    steps:
+      - name: Recuperar Artefato
+        uses: actions/download-artifact@v4
+        with:
+          name: meu-pacote
+
+      - name: Exibir Conteúdo
+        run: cat relatorio.txt
+```
+
+--
+
+No exemplo, o nome `meu-pacote` funciona como um "contêiner" ou uma pasta zipada no armazenamento do GitHub. Você pode colocar quantos arquivos quiser dentro dele de uma única vez.
+
+Se você tem uma pasta chamada `saida/` com vários arquivos dentro, basta apontar para ela. O GitHub vai manter a estrutura de pastas original.
+
+```yml
+- name: Salvar múltiplos arquivos
+  uses: actions/upload-artifact@v4
+  with:
+    name: meu-pacote
+    path: saida/  # Envia tudo que estiver dentro desta pasta
+```
+
+Pode-se usar a escolha de padrões:
+
+```yml
+- name: Salvar todos os relatórios
+  uses: actions/upload-artifact@v4
+  with:
+    name: meu-pacote
+    path: *.txt  # Envia todos os arquivos .txt na raiz do projeto
+```
+
+---
+
+# Controlar quando os workflows são executados
+
+```yml
+on:
+  push:
+    branches:
+      - "feature/*"
+```
+
+No exemplo acima o `push` é restrito. Se você commitar na `main`, nada acontece. Só roda se você der push em branches que comecem com `feature`, exemplo `feature/adiciona-botao`
+
+--
+
+O `pull_request` usa filtros de caminho. Isso evita gastar tempo rodando testes se você só alterou um arquivo de documentação (`.txt`) que não afeta o sistema.
+
+```yml
+on:
+  # Gatilho de Pull Request (Filtro de Arquivos)
+  pull_request:
+    paths:
+        # Só dispara se houver mudança em arquivos .md nesta pasta.
+      - "03-core-features/filters/*.md"
+      # O "!" indica EXCEÇÃO: se mudar só arquivo .txt, ele NÃO roda.
+      - "!03-core-features/filters/*.txt"
+```
+
+--
+
+Pontos:
+- **Curinga simples** (`*`) corresponde a qualquer coisa em uma única pasta.
+  - `docs/*.md` → pega `docs/readme.md`, mas não pega `docs/api/setup.md`.
+- **Curinga recursivo** (`**`) corresponde a qualquer arquivo em qualquer subpasta.
+  - `src/**` → Pega absolutamente tudo dentro de `src`, não importa a profundidade.
+
+--
+
+O `schedule` garante que, mesmo que ninguém mexa no código, o workflow rode diariamente (útil para backups ou checagem de segurança). Utiliza [expressões de agendamento cron](https://crontab.guru/).
+
+```yml
+on:
+  # Gatilho Agendado (Cron)
+  schedule:
+    # Executa automaticamente todo dia à meia-noite (horário UTC)
+    - cron: "0 0 * * *"
+```
+
+--
+
+- O `workflow_dispatch` é sua garantia de poder testar o fluxo a qualquer momento sem precisar fazer um commit fake.
+
+```yml
+on:
+  # Gatilho Manual
+  workflow_dispatch:
+  # Cria o botão "Run workflow" na interface do GitHub
+  # para você rodar quando quiser
+```
+
+--
+
+Imagine um projeto com esta estrutura:
+- `/frontend` (React)
+- `/backend` (Node.js)
+- `/docs` (Documentação)
+
+Você quer que o workflow de Backend rode apenas se houver mudanças reais no código do servidor.
+
+```yml
+on:
+  push:
+    paths:
+      # Roda se mudar qualquer coisa no backend
+      - 'backend/**'
+      # Roda se mudar este arquivo específico na raiz
+      - 'shared-types.ts'
+      # EXCEÇÃO: Se mudar SÓ arquivo de teste, NÃO rode (opcional)
+      - '!backend/**/*.test.js'
+      # EXCEÇÃO: Ignore mudanças em docs dentro do backend
+      - '!backend/docs/**'
+```
+
+--
+
+Pontos:
+
+- **A ordem importa**: o GitHub processa a lista de cima para baixo. Se você incluir algo (`backend/**`) e depois excluir (`!backend/docs/**`), a exclusão ganha para os arquivos de docs. Ou seja, *a última instrução que der match em um arquivo* é a que define se ele entra ou sai da execução.
+- Use `paths` quando você quer listar o que ativa o workflow e `paths-ignore` quando você quer listar o que não deve ativar. *Você não pode usar os dois para o mesmo evento no mesmo workflow.*

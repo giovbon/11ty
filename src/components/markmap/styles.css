@@ -1,0 +1,107 @@
+/* Componente `markmap` — moldura e legibilidade do mapa mental. */
+
+.markmap {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  margin: var(--s6) 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+
+  /* variáveis usadas pelas versões recentes do markmap-view */
+  --markmap-text-color: var(--text);
+  --markmap-circle-open-bg: var(--surface);
+  --markmap-circle-closed-bg: var(--surface-2);
+  --markmap-code-bg: var(--code-bg);
+}
+
+.markmap svg {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-sans);
+}
+
+.markmap .markmap-node div {
+  color: var(--text);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.markmap .markmap-link {
+  stroke-width: 2px;
+  stroke-opacity: 0.75;
+}
+
+.markmap .markmap-node > circle {
+  stroke: var(--accent);
+}
+
+.markmap .markmap-node .markmap-foreign {
+  color: var(--text);
+}
+
+.markmap .markmap-node code {
+  background: var(--code-bg);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.markmap-carregando,
+.markmap-erro {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: var(--s4);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+.markmap-erro {
+  color: var(--danger);
+}
+
+/* Controles (criados pelo client) */
+.markmap-controles {
+  position: absolute;
+  right: var(--s3);
+  bottom: var(--s3);
+  z-index: 2;
+  display: flex;
+  gap: var(--s1);
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(14, 15, 17, 0.85);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.markmap:hover .markmap-controles,
+.markmap:focus-within .markmap-controles {
+  opacity: 1;
+}
+
+.markmap-controles button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.markmap-controles button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}

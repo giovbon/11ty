@@ -1,0 +1,47 @@
+{% extends "layouts/base.njk" %}
+
+{# reveal.js só é carregado nas páginas que têm deck #}
+{% block head %}
+  {% if item.frontmatter.presentation %}
+    <link rel="stylesheet" href="{{ '/static/lib/reveal/reveal.css' | link }}" />
+    <link rel="stylesheet" href="{{ '/static/lib/reveal/black.css' | link }}" />
+    <script src="{{ '/static/lib/reveal/reveal.js' | link }}"></script>
+    <script src="{{ '/static/lib/reveal/plugin/markdown/markdown.js' | link }}"></script>
+    <script src="{{ '/static/lib/reveal/plugin/highlight/highlight.js' | link }}"></script>
+  {% endif %}
+  {# highlight.js: usado pelo explorador de código; também é aproveitado pelo deck #}
+  {% if item.frontmatter.codes %}
+    <script src="{{ '/static/lib/reveal/highlight.min.js' | link }}"></script>
+  {% endif %}
+  {# asciinema: player vendorizado, só nas páginas com gravações #}
+  {% if item.frontmatter.asciinema %}
+    <link rel="stylesheet" href="{{ '/static/lib/asciinema/asciinema-player.css' | link }}" />
+    <script src="{{ '/static/lib/asciinema/asciinema-player.min.js' | link }}"></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% include "partials/breadcrumbs.njk" %}
+  <h1 class="page-title">{{ item.title }}</h1>
+  {% include "partials/meta.njk" %}
+
+  {# Componentes acionados pelo frontmatter (1 chave = 1 componente).
+     Cada um devolve "" quando a chave não existe, então podem ficar soltos aqui. #}
+  {# Ordem de leitura: visão geral (deck, mapa) → terminal → exercício → markdown → código #}
+  {{ item.frontmatter | presentation | safe }}
+  {{ item.frontmatter | markmap | safe }}
+  {{ item.frontmatter | asciinema | safe }}
+  {{ item.frontmatter | typst | safe }}
+  {{ item.frontmatter | codes | safe }}
+
+  <article class="prose">
+    {{ item.html | safe }}
+  </article>
+
+  {# A entrega vem depois do conteúdo: o aluno lê o exercício e envia #}
+  {{ item.frontmatter | submission | safe }}
+{% endblock %}
+
+{% block aside %}
+  {% include "partials/toc.njk" %}
+{% endblock %}
