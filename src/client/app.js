@@ -14,7 +14,8 @@ import { initMarkmap } from "../components/markmap/client.js"
 const html = document.documentElement
 
 /* 1. Gaveta de navegação (oculta por padrão) ------------------------------ */
-const toggle = document.querySelector("[data-sidebar-toggle]")
+/* Ela não tem botão de abrir: entra pela tecla `[` (ou Ctrl+B). Fecha com Esc,
+   com o ✕ ou clicando no fundo. */
 const sidebar = document.getElementById("sidebar")
 const btnFechar = sidebar?.querySelector("[data-sidebar-close]") ?? null
 const backdrop = document.querySelector(".nav-backdrop")
@@ -23,14 +24,12 @@ const gavetaAberta = () => html.classList.contains("is-sidebar-open")
 
 function setGaveta(aberta) {
   html.classList.toggle("is-sidebar-open", aberta)
-  if (toggle instanceof HTMLElement) toggle.setAttribute("aria-expanded", String(aberta))
 
   // O foco não pode ficar atrás do fundo (nem dentro de uma gaveta fechada)
   if (aberta) btnFechar?.focus({ preventScroll: true })
-  else if (document.activeElement !== toggle) toggle?.focus?.({ preventScroll: true })
+  else if (sidebar?.contains(document.activeElement)) document.activeElement.blur()
 }
 
-toggle?.addEventListener("click", () => setGaveta(!gavetaAberta()))
 btnFechar?.addEventListener("click", () => setGaveta(false))
 backdrop?.addEventListener("click", () => setGaveta(false))
 
@@ -79,9 +78,27 @@ for (const pre of document.querySelectorAll("pre")) {
 }
 
 /* 3. Componentes ---------------------------------------------------------- */
-initPresentation()
+const apresentacao = initPresentation()
 initMarkmap()
 initAsciinema()
 initTypst()
 initCodes()
 initSubmission()
+
+/* 4. Links externos abrem em nova aba ------------------------------------- */
+/**
+ * O markdown do conteúdo já sai com `target="_blank"` do build (src/_lib/content.js);
+ * esta varredura cobre o que nasce no navegador — principalmente os links dos
+ * slides, que o reveal monta depois de inicializar.
+ */
+function abrirExternosEmNovaAba(raiz = document) {
+  for (const link of raiz.querySelectorAll("a[href]")) {
+    if (link.target === "_blank") continue
+    if (!/^(https?:)?\/\//i.test(link.getAttribute("href") ?? "")) continue
+    link.target = "_blank"
+    link.rel = "noopener noreferrer"
+  }
+}
+
+abrirExternosEmNovaAba()
+apresentacao.then(() => abrirExternosEmNovaAba()).catch(() => {})

@@ -47,7 +47,7 @@
 
   /* layout */
   --sidebar-w: 264px;
-  --content-w: 84ch;
+  --content-w: 100ch;
   --radius: 8px;
   --transition: 140ms ease;
 }

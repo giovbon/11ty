@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url"
 import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import markdownItAnchor from "markdown-it-anchor"
+import { isExternalUrl } from "./urls.js"
 
 /**
  * Leitura do conteúdo — SOMENTE LEITURA.
@@ -34,6 +35,23 @@ const IGNORED_FILES = new Set(["demonstracao.md"])
 
 const md = new MarkdownIt({ html: true, linkify: false })
   .use(markdownItAnchor, { slugify: slugifyHeading, permalink: false, level: [2, 3, 4] })
+
+/**
+ * Link externo abre em nova aba (link interno fica na mesma).
+ * O cliente faz a mesma varredura no DOM (src/client/app.js) para o que nasce
+ * depois do build — principalmente os links dos slides, gerados pelo reveal.
+ */
+const renderLinkOpen =
+  md.renderer.rules.link_open ??
+  ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+
+md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+  if (isExternalUrl(tokens[idx].attrGet("href"))) {
+    tokens[idx].attrSet("target", "_blank")
+    tokens[idx].attrSet("rel", "noopener noreferrer")
+  }
+  return renderLinkOpen(tokens, idx, options, env, self)
+}
 
 function slugifyHeading(value) {
   return String(value)

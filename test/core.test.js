@@ -6,7 +6,9 @@ import {
   buildFolders,
   buildNavigation,
   getEntries,
+  markdown,
 } from "../src/_lib/content.js"
+import { isExternalUrl } from "../src/_lib/urls.js"
 import { getBaseUrl, isExternal, resolveUrl } from "../src/client/shared/urls.js"
 
 const pagina = (dir, slug, title, order) => ({
@@ -106,4 +108,32 @@ test("urls: com BASE_URL de subpasta o prefixo é aplicado uma única vez", () =
   assert.equal(resolveUrl("/impacta/static/x.png", "/impacta/"), "/impacta/static/x.png")
   assert.equal(resolveUrl("/index.css", ""), "/index.css")
   assert.equal(resolveUrl("https://cdn/x.js", "/impacta/"), "https://cdn/x.js")
+})
+
+test("urls (build): isExternalUrl separa link de fora de caminho do site", () => {
+  assert.equal(isExternalUrl("https://exemplo.com/a"), true)
+  assert.equal(isExternalUrl("http://exemplo.com/a"), true)
+  assert.equal(isExternalUrl("//cdn.exemplo.com/a.js"), true)
+  assert.equal(isExternalUrl("/ADP/"), false)
+  assert.equal(isExternalUrl("#topo"), false)
+  assert.equal(isExternalUrl("../x"), false)
+  assert.equal(isExternalUrl(undefined), false)
+})
+
+test("markdown: link externo abre em nova aba, interno fica na mesma", () => {
+  const externo = markdown.render("[site](https://exemplo.com/a)")
+  assert.match(externo, /target="_blank"/)
+  assert.match(externo, /rel="noopener noreferrer"/)
+
+  assert.match(markdown.render("[cdn](//cdn.exemplo.com/a)"), /target="_blank"/)
+
+  const interno = markdown.render("[aula](/ADP/)")
+  assert.doesNotMatch(interno, /target=/)
+})
+
+test("conteúdo real: links externos saem com target e internos sem", () => {
+  const pagina = getEntries().find((entrada) => entrada.slug === "ADP/02ADP-PG-modelo-conceitual")
+
+  assert.match(pagina.html, /href="https:\/\/[^"]+" target="_blank"/)
+  assert.doesNotMatch(pagina.html, /<a[^>]*href="\/[^"]*"[^>]*target=/)
 })

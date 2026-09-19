@@ -109,16 +109,19 @@ no bloco `env:` do workflow.
 
 ### 4.3 Navegação e leitura
 
-- A árvore de navegação vive numa **gaveta** sobreposta, **fechada por padrão**. Abre pelo botão
-  ☰ no topo do conteúdo, pela tecla `[` ou por `Ctrl+B`; fecha com `Esc`, com o ✕ ou clicando no
-  fundo escurecido. O foco entra no painel ao abrir e volta para o botão ao fechar; fechada, a
-  gaveta sai da ordem de tabulação (`visibility: hidden`).
+- A árvore de navegação vive numa **gaveta** sobreposta, **fechada por padrão**. Abre pela tecla
+  `[` ou por `Ctrl+B` (não existe botão de abrir na interface — decisão do projeto); fecha com
+  `Esc`, com o ✕ ou clicando no fundo escurecido. O foco entra no painel ao abrir e sai ao fechar;
+  fechada, a gaveta sai da ordem de tabulação (`visibility: hidden`).
 - Cada pasta é um `<details>`: **colapsada por padrão**, e só a **cadeia da página atual** vem
   aberta (com a página destacada). O nome da pasta continua sendo link para a página dela.
-- **Sem painel "Nesta página"**: o conteúdo usa a largura toda. O `toc` continua sendo calculado
-  em `src/_lib/content.js` (dá para reusar num sumário inline no futuro). Como não há mais coluna
-  à direita, a coluna de leitura subiu de `72ch` para `84ch` (`--content-w` em `tokens.css`) e os
-  componentes (deck, explorer) usam a largura cheia do shell.
+- **Links externos abrem em nova aba** (`target="_blank" rel="noopener noreferrer"`), em duas
+  camadas: o markdown do conteúdo sai pronto do build (`content.js`) e uma varredura no cliente
+  (`app.js`) cobre o que nasce no DOM — os links dos slides, montados pelo reveal.
+- **Sem trilha (breadcrumbs)** acima do título e **sem painel "Nesta página"**: o conteúdo usa a
+  largura toda, com a coluna de leitura em `--content-w` (`tokens.css`, hoje `100ch`) e os
+  componentes (deck, explorer) na largura cheia do shell. Os dados `breadcrumbs` e `toc` continuam
+  sendo calculados em `src/_lib/content.js`, prontos para reuso.
 - **Sem data nem tempo de leitura** abaixo do título: `partials/meta.njk` foi removido junto com o
   painel lateral, porque não havia outra informação nele.
 
@@ -164,7 +167,7 @@ formulário ao vivo) continua sendo verificado manualmente na seção 9.
 | Fase 1.1 — Asciinema (`.cast`) | ✅ player vendorizado, 4 gravações na aula do CTT, playback validado |
 | Fase 1.1 — Markmap (mapa mental) | ✅ libs vendorizadas sob demanda, 66 nós no roadmap do CTT, zoom/centralizar/tela cheia |
 | Infra — `run.sh` + watch no WSL | ✅ live reload validado no navegador (edição de `.md` e de CSS) |
-| Infra — navegação em gaveta, pastas colapsáveis, sem sumário/meta | ✅ botão, atalhos `[` e `Ctrl+B`, `Esc`, foco gerenciado |
+| Infra — navegação em gaveta, pastas colapsáveis, sem sumário/meta | ✅ atalhos `[` e `Ctrl+B`, `Esc`, foco gerenciado, sem botão |
 | Infra — workflow de deploy | ✅ escrito, ainda não exercitado (falta criar o repositório) |
 | Fase 2 — busca, tags, RSS, sitemap, backlinks, popovers | ⏳ |
 

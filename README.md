@@ -1,5 +1,7 @@
 # site-11ty — site de materiais de aula
 
+Abre a navegação com `[` (ou Ctrl+B); fecha com `Esc`. Não há botão de abrir na interface.
+
 Projeto **separado** do site Quartz que existe na raiz do repositório. Este projeto é autocontido:
 conteúdo, slides, mapas mentais, códigos e libs vivem todos aqui dentro.
 

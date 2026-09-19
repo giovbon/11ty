@@ -9,15 +9,6 @@
 
 /* ---------- Gaveta de navegação ---------- */
 
-/* Botão no topo do conteúdo; fica visível enquanto a página rola. */
-.nav-toggle {
-  position: sticky;
-  top: var(--s4);
-  z-index: 15;
-  margin-bottom: var(--s3);
-  background: var(--surface);
-}
-
 .sidebar {
   position: fixed;
   top: 0;
@@ -187,28 +178,6 @@
 
 .main {
   min-width: 0;
-}
-
-.breadcrumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s2);
-  font-size: var(--text-sm);
-  color: var(--faint);
-  margin-bottom: var(--s4);
-}
-
-.breadcrumbs a {
-  color: var(--muted);
-}
-
-.breadcrumbs__sep {
-  color: var(--border-strong);
-}
-
-.breadcrumbs__current {
-  color: var(--faint);
 }
 
 .card-list {

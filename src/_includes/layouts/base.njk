@@ -17,15 +17,6 @@
     <div class="shell">
       {% include "partials/sidebar.njk" %}
       <main id="conteudo" class="main">
-        <button
-          class="icon-btn nav-toggle"
-          type="button"
-          data-sidebar-toggle
-          aria-controls="sidebar"
-          aria-expanded="false"
-          aria-keyshortcuts="["
-          title="Navegação (atalho: [ )"
-        >☰</button>
         {% block content %}{{ content | safe }}{% endblock %}
         {% include "partials/footer.njk" %}
       </main>
