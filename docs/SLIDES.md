@@ -113,6 +113,11 @@ n = n + 1
 console.log(n)</code></pre>
 ```
 
+> ⚠️ Dentro do `<pre>` **não pode haver linha em branco**: em markdown, uma linha
+> em branco encerra o bloco de HTML e o resto do código vira parágrafo (e o slide
+> estoura). Se o trecho precisar de linha em branco no meio, use bloco cercado
+> (```` ``` ````) num slide só seu, sem auto-animate.
+
 O reveal interpola posição/tamanho dos elementos de mesmo `data-id`. É o efeito de
 "código que cresce" — funciona em markdown porque só depende de atributos na seção
 e no `<pre>`, ambos aceitos como HTML no meio do markdown.

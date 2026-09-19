@@ -1,17 +1,11 @@
 
 
 <!-- .slide: class="slide-cover" -->
-
 <p class="slide-cover__kicker">ADS · Application Data Persistance</p>
-
-# Modelo Teste
-
+<h3>Apresentação</h3>
 <p class="slide-cover__rule"></p>
-
 <p class="slide-cover__sub">Como ler e construir um DER a partir do mini-mundo.</p>
-
 <p class="slide-cover__meta"><span>Aula 03</span><span>Prof. Giovani B.</span></p>
-
 <p class="slide-cover__num">03</p>
 
 ---
@@ -53,3 +47,72 @@ SE (Nota Final >= 6,0 e Frequência >= 75%)
     SENAO
         REPROVADO
 ```
+
+---
+
+## Recursos de slide (exemplos)
+
+Os slides a seguir são **exemplos** de recursos do reveal.js escritos em markdown puro —
+nada de HTML à mão: tudo o que está aqui funciona em qualquer deck
+(o guia completo está em `docs/SLIDES.md`).
+
+---
+
+## Realce por passo
+
+Um bloco de código pode destacar linhas em etapas — avance com as setas:
+
+```python [1-2|4|6-8|10]
+def calcular_media(notas):
+    total = sum(notas)
+
+    quantidade = len(notas)
+
+    if quantidade == 0:
+        return 0
+
+    media = total / quantidade
+    return round(media, 2)
+
+print(calcular_media([7, 8, 9]))
+```
+
+Repare que os números vão entre colchetes, depois da linguagem:
+`[1-2|4|6-8|10]` — cada parte separada por `|` é um passo.
+
+---
+
+## Auto-animate — começo
+
+O mesmo elemento "anda" de um slide para o outro quando os dois têm
+`data-auto-animate` e os elementos têm o mesmo `data-id`:
+
+⚠️ Dentro de `<pre>` não pode haver linha em branco: em markdown, linha em branco
+encerra o bloco de HTML. Para código com linha em branco no meio, use bloco cercado.
+
+<!-- .slide: data-auto-animate -->
+
+<h3 data-id="titulo">O código cresce</h3>
+<pre data-id="codigo"><code class="language-python" data-trim>def soma(a, b):
+    return a + b</code></pre>
+
+---
+
+<!-- .slide: data-auto-animate -->
+
+<h3 data-id="titulo">O código cresce</h3>
+<pre data-id="codigo"><code class="language-python" data-trim>def soma(a, b):
+    return a + b
+total = soma(2, 3)
+print(total)</code></pre>
+
+---
+
+## Fragmentos
+
+Itens (ou qualquer elemento) podem aparecer um a um:
+
+- primeiro item, já visível
+- segundo item <!-- .element: class="fragment fade-up" -->
+- terceiro item <!-- .element: class="fragment" -->
+- e o último, que fica esmaecido <!-- .element: class="fragment fade-in-then-semi-out" -->
