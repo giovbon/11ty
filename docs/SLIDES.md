@@ -165,7 +165,39 @@ Só você vê isto (tecla S abre a janela de notas).
 
 ---
 
-## 8. Como conferir
+## 8. Sistema visual do deck (e a regra de ouro)
+
+O estilo mora em `src/components/presentation/styles.css` e segue a linguagem da capa:
+
+| Elemento | Como fica |
+|---|---|
+| Título (`#` e `##`) | quase branco (como o da capa) + filete de accent embaixo |
+| Subtítulo (`###`) | accent |
+| 1º parágrafo depois do título | cinza — faz as vezes de linha de apoio |
+| `**negrito**` | âmbar `#f0b775` — a mesma cor que o tema de código já usa |
+| `*itálico*` | chip azul com fundo de código |
+| Listas | marcador em accent |
+| Tabelas | cabeçalho com fundo accent translúcido, bordas e zebra suaves |
+| Imagens | canto arredondado + sombra |
+| Fundo do slide | brilho radial discreto no canto superior esquerdo |
+
+**Regra de ouro: nada aqui muda MÉTRICA** (`font-size`, `line-height`, `padding`,
+`margin`). Os decks foram montados nos tamanhos do tema original e qualquer pixel a
+mais empurra o conteúdo para fora da moldura. Quando a decoração precisa de espaço,
+ela é desenhada com `::after`/`::before` **fora do fluxo** (`position: absolute`),
+que não entra na altura do slide.
+
+⚠️ Os dois pontos que mais mexem na altura de um slide com código:
+
+- `padding` do `<code>` (hoje `20px`, na regra `.deck .reveal pre code`);
+- margem do `<pre>` — vem do reveal (`--r-block-margin`, 20px), não sobrescreva.
+
+Mudou algo aí? Meça: `scrollHeight` de cada `<section>` do deck antes e depois deve
+ser idêntico.
+
+---
+
+## 9. Como conferir
 
 ```bash
 ./run.sh              # salva o arquivo: o navegador recarrega sozinho

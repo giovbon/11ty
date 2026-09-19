@@ -30,6 +30,17 @@
   text-align: left;
 }
 
+/* Fundo: o mesmo brilho radial da capa, bem mais fraco, para o deck inteiro ter
+   o mesmo clima. `position: absolute` = não entra no fluxo, então nenhum slide
+   muda de tamanho (a capa tem o dela, mais forte). */
+.deck .reveal .slides section:not(.slide-cover)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 60% at 10% 0%, rgba(122, 162, 247, 0.1), transparent 62%);
+  pointer-events: none;
+}
+
 /* Botão de tela cheia (adicionado pelo client.js) */
 .deck .deck__fullscreen {
   position: absolute;
@@ -74,13 +85,45 @@
   color: var(--muted);
 }
 
-/* Tipografia do deck */
+/* ---------- Tipografia do deck ----------
+   Mesma linguagem da capa: título quase branco com filete de accent, apoio em
+   amarelo-âmbar (a cor que o tema de código já usa), realce em accent.
+
+   REGRA DE OURO: nada aqui pode mudar métrica (font-size, line-height, padding,
+   margin). Os tamanhos são os do deck original, porque os slides foram montados
+   para eles. Decoração que precisa de espaço é feita com `::after` POSICIONADO
+   FORA DO FLUXO — assim nenhum slide muda de altura. */
+
 .deck .reveal h1,
 .deck .reveal h2,
 .deck .reveal h3 {
-  color: var(--accent);
   text-transform: none;
   letter-spacing: -0.02em;
+}
+
+/* Título do slide: quase branco (como o da capa), com o filete de accent
+   desenhado embaixo — sem ocupar espaço no fluxo. */
+.deck .reveal h1,
+.deck .reveal h2 {
+  position: relative;
+  color: var(--text);
+}
+
+.deck .reveal h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 68px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  pointer-events: none;
+}
+
+/* Subtítulo: fica no accent, para a hierarquia continuar clara. */
+.deck .reveal h3 {
+  color: var(--accent);
 }
 
 .deck .reveal h1 {
@@ -95,6 +138,11 @@
   font-size: 1.2em;
 }
 
+/* Texto: branco gelado do site em vez do branco puro do tema do reveal. */
+.deck .reveal {
+  color: var(--text);
+}
+
 .deck .reveal p,
 .deck .reveal li {
   line-height: 1.35;
@@ -104,14 +152,24 @@
   margin-bottom: 0.5em;
 }
 
+/* Parágrafo logo abaixo do título faz as vezes de linha de apoio. */
+.deck .reveal h2 + p {
+  color: var(--muted);
+}
+
 .deck .reveal ul,
 .deck .reveal ol {
   display: block;
   margin-left: 1.2em;
 }
 
+/* Marcadores no accent (cor do marcador não altera métrica). */
+.deck .reveal li::marker {
+  color: var(--accent);
+}
+
 .deck .reveal em {
-  color: #4e9ffc;
+  color: var(--accent);
   background-color: var(--code-bg);
   padding: 0 8px;
   border-radius: 5px;
@@ -119,12 +177,20 @@
   font-weight: 700;
 }
 
+/* Ênfase forte no âmbar que o tema de código já usa (#f0b775). */
 .deck .reveal strong {
-  color: #d6a949;
+  color: #f0b775;
 }
 
 .deck .reveal a {
   color: var(--accent);
+}
+
+/* Filete de separação no padrão da capa (mantendo 1px de altura do original). */
+.deck .reveal hr {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, var(--accent), transparent 70%);
 }
 
 /* Código */
@@ -177,18 +243,24 @@
   padding: 8px 12px;
   line-height: 1.35;
   vertical-align: middle;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .deck .reveal th {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--accent-soft);
   color: var(--accent);
   font-weight: 700;
   text-align: left;
 }
 
 .deck .reveal tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Imagens: canto arredondado e sombra (não alteram o tamanho da imagem). */
+.deck .reveal img {
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 /* Blocos usados pelos slides (capa) */
@@ -371,17 +443,12 @@ precisa ser um heading de verdade (`# ...`) para aceitar `**negrito**`; dentro d
   box-shadow: inset 2px 0 0 var(--accent);
 }
 
-/* O bloco de código do slide acompanha a largura do slide, com respiro. */
-.deck .reveal pre {
-  width: 100%;
-  margin: 0.6em 0 0;
-}
-
+/* O bloco de código do slide acompanha a largura do slide.
+   ATENÇÃO: padding, fonte e line-height do bloco vivem na regra `.reveal pre code`
+   lá em cima e definem a ALTURA dele — mexer neles muda o encaixe dos slides
+   antigos. Aqui só entra decoração (raio), que não altera métrica. */
 .deck .reveal pre code.hljs {
-  padding: 0.9em 1.1em;
   border-radius: var(--radius);
-  background: var(--code-bg);
-  font-family: var(--font-mono);
 }
 
 /* Deck recebendo o teclado (quando há mais de um na página) */
