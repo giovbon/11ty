@@ -23,7 +23,6 @@
 {% block content %}
   {% include "partials/breadcrumbs.njk" %}
   <h1 class="page-title">{{ item.title }}</h1>
-  {% include "partials/meta.njk" %}
 
   {# Componentes acionados pelo frontmatter (1 chave = 1 componente).
      Cada um devolve "" quando a chave não existe, então podem ficar soltos aqui. #}
@@ -40,8 +39,4 @@
 
   {# A entrega vem depois do conteúdo: o aluno lê o exercício e envia #}
   {{ item.frontmatter | submission | safe }}
-{% endblock %}
-
-{% block aside %}
-  {% include "partials/toc.njk" %}
 {% endblock %}

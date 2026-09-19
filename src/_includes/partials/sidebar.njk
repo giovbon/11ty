@@ -1,5 +1,9 @@
-{# Barra lateral: marca, busca (Fase 2) e árvore de navegação por `order`. #}
-<aside class="sidebar" id="sidebar">
+{# Barra lateral de navegação — gaveta oculta por padrão.
+
+   Abre/fecha pelo botão ☰ (no topo do conteúdo), pela tecla `[` ou por Ctrl+B
+   (ver src/client/app.js). Cada pasta é colapsável (`<details>`) e, por padrão,
+   só a cadeia da página atual vem aberta. #}
+<aside class="sidebar" id="sidebar" aria-label="Navegação lateral">
   <div class="sidebar__head">
     <a class="brand" href="{{ '/' | link }}">
       <span class="brand__mark" aria-hidden="true"></span>
@@ -8,24 +12,36 @@
         <small>{{ site.subtitle }}</small>
       </span>
     </a>
-    <button class="icon-btn sidebar__toggle" type="button" data-sidebar-toggle aria-label="Alternar navegação">☰</button>
+    <button class="icon-btn" type="button" data-sidebar-close aria-label="Fechar navegação">✕</button>
   </div>
 
   <nav class="nav" aria-label="Navegação principal">
     {% macro navTree(nodes) %}
       <ul class="nav-tree">
         {% for node in nodes %}
-          <li class="nav-item nav-item--{{ node.kind }}">
-            {% if node.kind == 'folder' %}
-              <a class="nav-link{% if node.url == page.url %} is-active{% endif %}" href="{{ node.url | link }}">{{ node.name }}</a>
-              {% if node.children.length > 0 %}{{ navTree(node.children) }}{% endif %}
-            {% else %}
+          {% if node.kind == 'folder' %}
+            {# A pasta está no caminho da página atual? (indexOf da URL da pasta) #}
+            {% set naCadeia = page.url.indexOf(node.url) == 0 %}
+            <li class="nav-item nav-item--folder">
+              <details class="nav-folder{% if naCadeia and node.url != page.url %} is-branch{% endif %}"{% if naCadeia %} open{% endif %}>
+                <summary class="nav-folder__summary">
+                  <span class="nav-folder__caret" aria-hidden="true"></span>
+                  <a class="nav-link nav-link--folder{% if node.url == page.url %} is-active{% endif %}" href="{{ node.url | link }}">{{ node.name }}</a>
+                </summary>
+                {{ navTree(node.children) }}
+              </details>
+            </li>
+          {% else %}
+            <li class="nav-item nav-item--page">
               <a class="nav-link{% if node.url == page.url %} is-active{% endif %}" href="{{ node.url | link }}">{{ node.title }}</a>
-            {% endif %}
-          </li>
+            </li>
+          {% endif %}
         {% endfor %}
       </ul>
     {% endmacro %}
     {{ navTree(navigation) }}
   </nav>
 </aside>
+
+{# Fundo escurecido: clicar nele fecha a gaveta. #}
+<div class="nav-backdrop" data-sidebar-close></div>

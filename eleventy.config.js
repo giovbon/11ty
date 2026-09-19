@@ -1,3 +1,6 @@
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 import { withPrefix } from "./src/_lib/urls.js"
 import { renderPresentation } from "./src/components/presentation/render.js"
 import { renderTypst } from "./src/components/typst/render.js"
@@ -21,6 +24,13 @@ export default function (eleventyConfig) {
   eleventyConfig.setDataDirectory("_data")
   eleventyConfig.setTemplateFormats(["njk"])
 
+  // O Eleventy usa o `.gitignore` como lista de exclusão do WATCHER. Como os
+  // artefatos de build estão lá (`src/assets/static/app.css`, `app.js`, `dev/`),
+  // salvar qualquer CSS/JS não disparava rebuild nenhum — o `--serve` ficava no
+  // ar servindo a versão antiga. Aqui a exclusão passa a ser só o que o Eleventy
+  // já ignora por padrão (node_modules, _site, .cache).
+  eleventyConfig.setUseGitIgnore(false)
+
   // CSS e JS do próprio site (o CSS é bundlado por scripts/build-assets.mjs)
   eleventyConfig.addPassthroughCopy({ "src/assets/static": "static" })
 
@@ -31,9 +41,28 @@ export default function (eleventyConfig) {
   // O conteúdo é lido como DADO (src/_lib/content.js), não como template — ou seja,
   // vive fora de src/ e o Eleventy não o observaria sozinho. Sem isto, salvar um
   // .md em content/ (ou um slide/mapa/exercício) não atualizaria o site no dev.
-  for (const dir of ["content", "slides", "mindmaps", "codes"]) {
+  // `dev/` entra na lista porque é onde o esbuild grava o carimbo dos assets: o
+  // watcher do Eleventy não reage a `src/_data` nem a caminhos de passthrough,
+  // então um watch target dedicado é o que dispara o rebuild quando o CSS muda.
+  for (const dir of ["content", "slides", "mindmaps", "codes", "dev"]) {
     eleventyConfig.addWatchTarget(`./${dir}/`)
   }
+
+  /**
+   * Carimbo dos assets (`?v=` no base.njk), gravado pelo esbuild a cada bundle.
+   * Em dev, uma aba antiga pode continuar com o `app.css` velho porque o servidor
+   * de desenvolvimento não manda cabeçalho de cache; com `?v=` a URL muda e o
+   * navegador é obrigado a baixar de novo (vale para o dev e para o Pages).
+   */
+  const raiz = path.dirname(fileURLToPath(import.meta.url))
+  eleventyConfig.addGlobalData("assetStamp", () => {
+    try {
+      const version = fs.readFileSync(path.join(raiz, "dev/assetStamp.md"), "utf8").trim()
+      return { version: version || "0" }
+    } catch {
+      return { version: "0" }
+    }
+  })
 
   // Projetos em /mnt/c (WSL) NÃO recebem eventos do inotify — nem para o que é
   // salvo pelo Windows, nem para o que é salvo dentro do WSL. Sem polling, o
@@ -67,6 +96,10 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter("submission", (frontmatter) => renderSubmission(frontmatter))
   eleventyConfig.addFilter("asciinema", (frontmatter) => renderAsciinema(frontmatter))
   eleventyConfig.addFilter("markmap", (frontmatter) => renderMarkmap(frontmatter))
+
+  // No `--serve`, o padrão do Eleventy copia os passthrough uma única vez e não os
+  // recopia em rebuild incremental; quem publica a saída do esbuild no dev é
+  // scripts/dev.mjs (ver MODELO.md §4.1).
 
   eleventyConfig.setServerOptions({
     port: Number.parseInt(process.env.PORT ?? "", 10) || 8080,

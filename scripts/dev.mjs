@@ -17,6 +17,13 @@ spawnSync(process.execPath, [path.join(root, "scripts/vendor-libs.mjs")], {
   cwd: root,
 })
 
+// Gera o bundle e o carimbo de uma vez antes de subir o Eleventy: assim o
+// primeiro HTML já sai com `?v=` correto (o esbuild em watch só escreve depois).
+spawnSync(process.execPath, [path.join(root, "scripts/build-assets.mjs")], {
+  stdio: "inherit",
+  cwd: root,
+})
+
 const children = [
   spawn("npx", ["eleventy", "--serve"], { stdio: "inherit", cwd: root, shell: isWindows }),
   spawn(process.execPath, [path.join(root, "scripts/build-assets.mjs"), "--watch"], {

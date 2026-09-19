@@ -10,6 +10,9 @@ src/assets/static/app.js.map
 src/assets/static/app.css
 src/assets/static/app.css.map
 
+# carimbo dos assets, gravado pelo esbuild (dispara o rebuild no dev)
+dev/
+
 # cache do Eleventy
 .cache/
 .tmp-tests/

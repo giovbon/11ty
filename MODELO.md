@@ -83,12 +83,16 @@ PORT=8081 ./run.sh                  # outra porta
 BASE_URL=/impacta-11ty/ ./run.sh    # simular o Pages em subpasta
 ```
 
-Duas armadilhas do WSL que já estão resolvidas (e que custaram diagnóstico):
+Armadilhas que já estão resolvidas (todas custaram diagnóstico):
 
 | Sintoma | Causa | Solução |
 |---|---|---|
 | Salva o arquivo e o site não muda | `/mnt/c` **não entrega eventos de inotify** — nem para o que o Windows grava, nem para o que o WSL grava | `setChokidarConfig({ usePolling: true })` automático quando o `cwd` casa com `/mnt/<letra>/`; `WATCH_POLLING=1`/`0` força ligado/desligado |
-| Página de uma aula removida continua no ar | `--serve` não apaga de `_site` a saída de um template que deixou de existir | `_site` é apagado ao iniciar o dev (`scripts/dev.mjs`) e antes de `npm run build`, que agora começa com `clean` |
+| Salva um `.md` e o site não muda | `content/`, `slides/`, `mindmaps/`, `codes/` são lidos como dado, fora de `src/` | `addWatchTarget` em cada um deles |
+| Salva CSS/JS e **nada** acontece | o Eleventy usa o `.gitignore` como lista de **exclusão do watcher** — e o bundle está lá (`src/assets/static/app.*`) | `setUseGitIgnore(false)`. Para conferir: `DEBUG='Eleventy*' npx eleventy --watch` imprime `Ignoring watcher changes to:`. |
+| O rebuild acontece mas o navegador continua com o CSS antigo | em `--serve` o passthrough copy copia uma vez e não recopia no rebuild incremental | o plugin `publicar-assets` (`scripts/build-assets.mjs`) copia o bundle para `_site/static/` |
+| Aba aberta há tempos mostra CSS velho | o servidor de dev não manda `Cache-Control`/`ETag` | `?v=` com o mtime do bundle (`dev/assetStamp.md` → global data `assetStamp` no `base.njk`) |
+| Página de uma aula removida continua no ar | `--serve` não apaga de `_site` a saída de um template que deixou de existir | `_site` é apagado ao iniciar o dev (`scripts/dev.mjs`) e antes de `npm run build`, que começa com `clean` |
 
 ### 4.2 Publicação (GitHub Pages)
 
@@ -102,6 +106,21 @@ Para ligar: criar o repositório vazio, adicionar o remoto, fazer push da `main`
 *Settings → Pages*, escolher **Source: GitHub Actions**. A URL final é
 `https://giovbon.github.io/impacta-11ty/` — se o nome do repositório for outro, ajuste o `BASE_URL`
 no bloco `env:` do workflow.
+
+### 4.3 Navegação e leitura
+
+- A árvore de navegação vive numa **gaveta** sobreposta, **fechada por padrão**. Abre pelo botão
+  ☰ no topo do conteúdo, pela tecla `[` ou por `Ctrl+B`; fecha com `Esc`, com o ✕ ou clicando no
+  fundo escurecido. O foco entra no painel ao abrir e volta para o botão ao fechar; fechada, a
+  gaveta sai da ordem de tabulação (`visibility: hidden`).
+- Cada pasta é um `<details>`: **colapsada por padrão**, e só a **cadeia da página atual** vem
+  aberta (com a página destacada). O nome da pasta continua sendo link para a página dela.
+- **Sem painel "Nesta página"**: o conteúdo usa a largura toda. O `toc` continua sendo calculado
+  em `src/_lib/content.js` (dá para reusar num sumário inline no futuro). Como não há mais coluna
+  à direita, a coluna de leitura subiu de `72ch` para `84ch` (`--content-w` em `tokens.css`) e os
+  componentes (deck, explorer) usam a largura cheia do shell.
+- **Sem data nem tempo de leitura** abaixo do título: `partials/meta.njk` foi removido junto com o
+  painel lateral, porque não havia outra informação nele.
 
 ## 5. Como adicionar um componente (receita)
 
@@ -145,6 +164,7 @@ formulário ao vivo) continua sendo verificado manualmente na seção 9.
 | Fase 1.1 — Asciinema (`.cast`) | ✅ player vendorizado, 4 gravações na aula do CTT, playback validado |
 | Fase 1.1 — Markmap (mapa mental) | ✅ libs vendorizadas sob demanda, 66 nós no roadmap do CTT, zoom/centralizar/tela cheia |
 | Infra — `run.sh` + watch no WSL | ✅ live reload validado no navegador (edição de `.md` e de CSS) |
+| Infra — navegação em gaveta, pastas colapsáveis, sem sumário/meta | ✅ botão, atalhos `[` e `Ctrl+B`, `Esc`, foco gerenciado |
 | Infra — workflow de deploy | ✅ escrito, ainda não exercitado (falta criar o repositório) |
 | Fase 2 — busca, tags, RSS, sitemap, backlinks, popovers | ⏳ |
 

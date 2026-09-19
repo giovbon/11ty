@@ -13,15 +13,46 @@ import { initMarkmap } from "../components/markmap/client.js"
 
 const html = document.documentElement
 
-/* 1. Navegação no mobile -------------------------------------------------- */
+/* 1. Gaveta de navegação (oculta por padrão) ------------------------------ */
 const toggle = document.querySelector("[data-sidebar-toggle]")
-if (toggle instanceof HTMLElement) {
-  toggle.setAttribute("aria-expanded", "false")
-  toggle.addEventListener("click", () => {
-    const isOpen = html.classList.toggle("is-sidebar-open")
-    toggle.setAttribute("aria-expanded", String(isOpen))
-  })
+const sidebar = document.getElementById("sidebar")
+const btnFechar = sidebar?.querySelector("[data-sidebar-close]") ?? null
+const backdrop = document.querySelector(".nav-backdrop")
+
+const gavetaAberta = () => html.classList.contains("is-sidebar-open")
+
+function setGaveta(aberta) {
+  html.classList.toggle("is-sidebar-open", aberta)
+  if (toggle instanceof HTMLElement) toggle.setAttribute("aria-expanded", String(aberta))
+
+  // O foco não pode ficar atrás do fundo (nem dentro de uma gaveta fechada)
+  if (aberta) btnFechar?.focus({ preventScroll: true })
+  else if (document.activeElement !== toggle) toggle?.focus?.({ preventScroll: true })
 }
+
+toggle?.addEventListener("click", () => setGaveta(!gavetaAberta()))
+btnFechar?.addEventListener("click", () => setGaveta(false))
+backdrop?.addEventListener("click", () => setGaveta(false))
+
+/* Atalhos: `[` alterna a gaveta (e Ctrl+B faz o mesmo — no Firefox o Ctrl+B é
+   dos favoritos, por isso `[` é o atalho oficial). Esc fecha a gaveta. */
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && gavetaAberta()) {
+    setGaveta(false)
+    return
+  }
+
+  const alvo = event.target
+  const digitando =
+    alvo instanceof HTMLElement &&
+    (alvo.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(alvo.tagName))
+  if (digitando || event.altKey || event.metaKey || event.shiftKey) return
+
+  if ((event.ctrlKey && event.key.toLowerCase() === "b") || (!event.ctrlKey && event.key === "[")) {
+    event.preventDefault()
+    setGaveta(!gavetaAberta())
+  }
+})
 
 /* 2. Botão "copiar" nos blocos de código ---------------------------------- */
 for (const pre of document.querySelectorAll("pre")) {
@@ -47,30 +78,7 @@ for (const pre of document.querySelectorAll("pre")) {
   pre.appendChild(button)
 }
 
-/* 3. Destaca no sumário a seção visível ----------------------------------- */
-const tocLinks = [...document.querySelectorAll("[data-toc-link]")]
-if (tocLinks.length > 0) {
-  const byId = new Map(tocLinks.map((link) => [link.getAttribute("data-toc-link"), link]))
-  const headings = [...byId.keys()]
-    .map((id) => document.getElementById(id))
-    .filter((el) => el !== null)
-
-  if (headings.length > 0) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          for (const link of tocLinks) link.classList.remove("is-active")
-          byId.get(entry.target.id)?.classList.add("is-active")
-        }
-      },
-      { rootMargin: "-15% 0px -75% 0px" },
-    )
-    headings.forEach((heading) => observer.observe(heading))
-  }
-}
-
-/* 4. Componentes ---------------------------------------------------------- */
+/* 3. Componentes ---------------------------------------------------------- */
 initPresentation()
 initMarkmap()
 initAsciinema()
