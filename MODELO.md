@@ -125,6 +125,21 @@ no bloco `env:` do workflow.
 - **Sem data nem tempo de leitura** abaixo do título: `partials/meta.njk` foi removido junto com o
   painel lateral, porque não havia outra informação nele.
 
+### 4.4 Código e slides
+
+- **Realce de sintaxe em um só lugar**: o tema `src/assets/styles/syntax.css` (classes `.hljs-*`) é
+  usado pelos três consumidores — conteúdo da aula (realçado **no build**, via highlight.js do
+  node_modules, sem JS no cliente), deck (plugin do reveal + highlight.js vendorizado) e explorador
+  de código (highlight.js no navegador, porque os arquivos são escolhidos pelo usuário).
+- O bloco do conteúdo sai como `<code class="hljs language-x" data-lang="x">`; o `data-lang`
+  alimenta o selo de linguagem no canto do `<pre>`.
+- **O reveal aceita quase tudo em markdown** (`docs/SLIDES.md` é o guia do autor): realce de linha
+  por passo com ```` ```js [1-2|4] ````, `data-auto-animate` + `data-id`, fragmentos com
+  `<!-- .element: class="fragment" -->`, notas com `Note:`. O que não funciona é markdown dentro de
+  tag HTML (o `**negrito**` sai literal).
+- A capa do deck é a classe `slide-cover` (`kicker` + heading + `rule` + `sub` + `meta` + `num`
+  opcional), com brilho radial em CSS — sem imagem externa.
+
 ## 5. Como adicionar um componente (receita)
 
 1. `src/components/<nome>/render.js` — lê o frontmatter e devolve **os dados + o HTML**

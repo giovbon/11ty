@@ -5,7 +5,6 @@
   color: #e6edf3;
   background: transparent;
 }
-
 .hljs-comment,
 .hljs-quote {
   color: var(--faint);
@@ -65,4 +64,23 @@
 
 .hljs-strong {
   font-weight: 700;
+}
+
+/* ---------- Blocos de código do conteúdo ---------- */
+
+/* Selo com a linguagem no canto do bloco. O `data-lang` vem do build
+   (src/_lib/content.js) e só existe quando a linguagem foi reconhecida.
+   Ele fica no `<code>`, mas o `position: absolute` ancora no `<pre>`
+   (que é `position: relative` em base.css). */
+.prose pre code[data-lang]::after {
+  content: attr(data-lang);
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  pointer-events: none;
 }

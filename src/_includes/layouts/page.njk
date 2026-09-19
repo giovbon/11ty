@@ -9,8 +9,8 @@
     <script src="{{ '/static/lib/reveal/plugin/markdown/markdown.js' | link }}"></script>
     <script src="{{ '/static/lib/reveal/plugin/highlight/highlight.js' | link }}"></script>
   {% endif %}
-  {# highlight.js: usado pelo explorador de código; também é aproveitado pelo deck #}
-  {% if item.frontmatter.codes %}
+  {# highlight.js: o deck (plugin do reveal) e o explorador de código precisam dele #}
+  {% if item.frontmatter.codes or item.frontmatter.presentation %}
     <script src="{{ '/static/lib/reveal/highlight.min.js' | link }}"></script>
   {% endif %}
   {# asciinema: player vendorizado, só nas páginas com gravações #}

@@ -137,3 +137,13 @@ test("conteúdo real: links externos saem com target e internos sem", () => {
   assert.match(pagina.html, /href="https:\/\/[^"]+" target="_blank"/)
   assert.doesNotMatch(pagina.html, /<a[^>]*href="\/[^"]*"[^>]*target=/)
 })
+
+test("markdown: bloco com linguagem sai realçado e com selo, sem linguagem não", () => {
+  const destacado = markdown.render("```js\nconst a = 1\n```")
+  assert.match(destacado, /class="hljs language-js"/)
+  assert.match(destacado, /data-lang="js"/)
+  assert.match(destacado, /hljs-keyword/)
+
+  const semLinguagem = markdown.render("```\napenas texto\n```")
+  assert.doesNotMatch(semLinguagem, /hljs|data-lang/)
+})

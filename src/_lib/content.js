@@ -2,6 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import matter from "gray-matter"
+import hljs from "highlight.js"
 import MarkdownIt from "markdown-it"
 import markdownItAnchor from "markdown-it-anchor"
 import { isExternalUrl } from "./urls.js"
@@ -33,8 +34,39 @@ export const CODES_DIR = path.join(ROOT, "codes")
 const IGNORED_DIRS = new Set(["oculto", "node_modules", ".git"])
 const IGNORED_FILES = new Set(["demonstracao.md"])
 
-const md = new MarkdownIt({ html: true, linkify: false })
+/**
+ * Realce de sintaxe do conteúdo (markdown da aula) feito no BUILD, com o
+ * highlight.js do node_modules — o mesmo cujo tema está em
+ * `src/assets/styles/syntax.css`. Assim aula, deck e explorador de código usam
+ * exatamente as mesmas cores, e a página não precisa baixar nada para isso.
+ * Bloco sem linguagem (ou desconhecida) devolve "" e o markdown-it só escapa.
+ */
+function realcarCodigo(codigo, linguagem) {
+  if (!linguagem || !hljs.getLanguage(linguagem)) return ""
+  try {
+    return hljs.highlight(codigo, { language: linguagem, ignoreIllegals: true }).value
+  } catch {
+    return ""
+  }
+}
+
+const md = new MarkdownIt({ html: true, linkify: false, highlight: realcarCodigo })
   .use(markdownItAnchor, { slugify: slugifyHeading, permalink: false, level: [2, 3, 4] })
+
+/**
+ * `<code class="hljs language-python" data-lang="python">`:
+ * o `hljs` liga o tema do syntax.css e o `data-lang` alimenta o selo de linguagem
+ * que aparece no canto do bloco (`.prose pre[data-lang]::after`).
+ */
+const renderFence = md.renderer.rules.fence
+md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  const linguagem = tokens[idx].info.trim().split(/\s+/)[0]
+  if (linguagem && hljs.getLanguage(linguagem)) {
+    tokens[idx].attrJoin("class", "hljs")
+    tokens[idx].attrSet("data-lang", linguagem)
+  }
+  return renderFence(tokens, idx, options, env, self)
+}
 
 /**
  * Link externo abre em nova aba (link interno fica na mesma).

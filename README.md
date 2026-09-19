@@ -53,7 +53,7 @@ content/    aulas em markdown (o frontmatter aciona os componentes) + static/ (a
 slides/     decks reveal.js (.md), lidos em tempo de build
 mindmaps/   mapas mentais (.md), lidos em tempo de build
 codes/      árvores de código do explorer (.zcode)
-docs/       PROPOSTA.md (contrato funcional) e MODELO.md (arquitetura e decisões)
+docs/       PROPOSTA.md (contrato), MODELO.md (arquitetura) e SLIDES.md (guia dos decks)
 scripts/    dev.mjs (serve + watch), build-assets.mjs (esbuild) e vendor-libs.mjs
 run.sh      sobe o ambiente de desenvolvimento
 src/        _lib (leitura do conteúdo), _data, _includes, pages, components, assets, client
