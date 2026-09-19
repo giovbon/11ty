@@ -179,7 +179,12 @@ O estilo mora em `src/components/presentation/styles.css` e segue a linguagem da
 | Listas | marcador em accent |
 | Tabelas | cabeçalho com fundo accent translúcido, bordas e zebra suaves |
 | Imagens | canto arredondado + sombra |
-| Fundo do slide | brilho radial discreto no canto superior esquerdo |
+| Fundo | brilho radial na **moldura do deck**, atrás dos slides (igual ao da capa) |
+
+> O brilho de fundo mora no quadro (`.deck .reveal::before`), não dentro da caixa do
+> slide. Dentro do slide ele termina numa borda reta visível quando o degradê ainda
+> não zerou — na moldura ele atravessa a tela toda, sem corte, e ainda fica parado
+> ao navegar. A capa tem o dela (mais forte), com `inset` negativo.
 
 **Regra de ouro: nada aqui muda MÉTRICA** (`font-size`, `line-height`, `padding`,
 `margin`). Os decks foram montados nos tamanhos do tema original e qualquer pixel a

@@ -22,23 +22,33 @@
   font-size: 28px;
 }
 
+/* Fundo do deck: o mesmo brilho radial da capa, cobrindo a MOLDURA inteira e
+   ficando atrás dos slides.
+
+   Fica no quadro, e não em cada slide, por dois motivos: (1) um brilho dentro da
+   caixa do slide termina numa borda reta visível quando o degradê ainda não
+   zerou — foi o que deixou feio no primeiro teste; (2) aqui o degradê pega a tela
+   toda e fica parado ao navegar, como uma marca de fundo.
+   `position: absolute` = fora do fluxo, não altera métrica de nada. */
+.deck .reveal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    125% 115% at 6% -12%,
+    rgba(122, 162, 247, 0.16),
+    rgba(122, 162, 247, 0.05) 42%,
+    transparent 74%
+  );
+  pointer-events: none;
+}
+
 .deck .reveal .slides {
   text-align: left;
 }
 
 .deck .reveal .slides section {
   text-align: left;
-}
-
-/* Fundo: o mesmo brilho radial da capa, bem mais fraco, para o deck inteiro ter
-   o mesmo clima. `position: absolute` = não entra no fluxo, então nenhum slide
-   muda de tamanho (a capa tem o dela, mais forte). */
-.deck .reveal .slides section:not(.slide-cover)::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(70% 60% at 10% 0%, rgba(122, 162, 247, 0.1), transparent 62%);
-  pointer-events: none;
 }
 
 /* Botão de tela cheia (adicionado pelo client.js) */
