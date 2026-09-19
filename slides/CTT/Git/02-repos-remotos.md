@@ -34,7 +34,7 @@ Ao criar um repositório, você pode optar por tornar o repositório público ou
 - Os repositórios *privados* só podem ser acessados por você, pelas pessoas com as quais você compartilha explicitamente o acesso e, em repositórios da organização, por determinados integrantes da organização.
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image8.png" width="80%">
+    <img src="https://i.ibb.co/LhkkQGqJ/image.png" width="80%">
 </div>
 
 ---
@@ -61,7 +61,7 @@ Para definir sua chave no Github siga o caminho:
 Settings > SSH and GPG keys > New SSH Key (defina o título e cole a chave copiada)
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-3-ssh.png" width="80%">
+    <img src="https://i.ibb.co/TB9PYn7t/image.png" width="80%">
 </div>
 
 ---
@@ -70,12 +70,12 @@ Formas de se trabalhar com o repositórios remotos:
 
 - a partir de um repositório local
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-integ.png" width="60%">
+    <img src="https://i.ibb.co/N2QppXtD/image.png" width="60%">
 </div>
 
 - a partir de um repositório remoto
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-1-integ.png" width="60%">
+    <img src="https://i.ibb.co/VpwMcJmp/image.png" width="60%">
 </div>
 
 ---
@@ -125,7 +125,7 @@ Para *atualizar o repositório local a partir do repo remoto*, os outros desenvo
 Abaixo o esquema completo da integração e comandos de repos locais e remotos:
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-100.png" width="80%">
+    <img src="https://i.ibb.co/2Y0xkyr1/image.png" width="80%">
 </div>
 
 ---
@@ -133,21 +133,3 @@ Abaixo o esquema completo da integração e comandos de repos locais e remotos:
 Quando você fizer o `push` de um branch local para um repositório remoto, criará um branch remoto. Um branch remoto é um branch em um repositório remoto.
 
 Veremos o conceito de branchs mais à frente...
-
-Vimos até o momento a integração entre um repo local e um remoto no github, mas *é possível também trabalhar em um repositório remoto diretamente pela interface do GitHub*.
-
----
-
-<div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-ui.png" width="100%">
-</div>
-
-<div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-1-ui.png" width="100%">
-</div>
-
----
-
-<div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-2-ui.png" width="100%">
-</div>

@@ -44,7 +44,7 @@ Exemplos: SCCS, CVS e Subversion.
 ---
 
 <div style="text-align: center;">
-    <img src="https://i.ibb.co/B2DHsHM5/modelo-v.png" width="40%" data-preview-image>
+    <img src="https://i.ibb.co/TB9Gwq4K/image.png" width="40%" data-preview-image>
 </div>
 
 ---
@@ -60,7 +60,7 @@ Exemplos: **Git**, BitKeeper, Mercurial.
 ---
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image2.png" width="50%">
+    <img src="https://i.ibb.co/YFhy0TPX/image.png" width="50%">
 </div>
 
 ---
@@ -118,7 +118,7 @@ Em comandos git, haverá situações em que você usará *comandos com opções 
 - **Argumentos** são valores que *fornecem informações para o comando*. Eles serão representados por colchetes angulares (<>), indicando que esses itens devem ser substituídos por valores inseridos pelo usuário.
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image.png" width="40%">
+    <img src="https://i.ibb.co/B5p9STR5/image.png" width="40%">
 </div>
 
 ---

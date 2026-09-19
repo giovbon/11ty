@@ -45,7 +45,7 @@ Como usar um fork para contribuir com um projeto
 
 1. **Fazer o Fork**: Vá até a página do repositório original no GitHub. No canto superior direito, clique no botão "Fork".
 <div style="text-align: center;">
-<img src="../../zSLIDES/img/image7-fork.png" width="100%" data-preview-image>
+<img src="https://i.ibb.co/jvYzDFPz/image.png" width="100%" data-preview-image>
 </div>
 Selecione a sua conta. Agora você tem uma cópia exata do projeto no seu perfil (ex: `github.com/seu-usuario/nome-do-projeto`).
 
@@ -70,7 +70,7 @@ Selecione a sua conta. Agora você tem uma cópia exata do projeto no seu perfil
 Um issue no GitHub é um *recurso usado para rastrear bugs, solicitações de recursos, tarefas a serem realizadas ou qualquer tipo de discussão sobre um projeto*. Os issues permitem que os membros da equipe *identifiquem e organizem trabalho pendente*, facilitando a comunicação sobre problemas e melhorias. Cada issue pode ser comentado, rotulado e atribuído a um ou mais colaboradores, tornando-se uma ferramenta valiosa para gerenciar projetos e manter um registro do que precisa ser feito ou o que já foi discutido. Além disso, os issues *permitem que a comunidade colabore e dê feedback de forma estruturada*.
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image6-issue.png" width="100%" data-preview-image>
+    <img src="https://i.ibb.co/4RjVp6XC/image.png" width="100%" data-preview-image>
 </div>
 
 ---
@@ -130,7 +130,7 @@ Qualquer pessoa com uma conta no GitHub pode criar uma issue em repositórios p�
 Os Projects no GitHub são ferramentas de *gerenciamento de projetos* que permitem organizar e acompanhar o progresso das tarefas dentro de um repositório. Eles utilizam uma abordagem visual, frequentemente em formato de **quadro Kanban**, onde as tarefas podem ser representadas como *cartões em colunas que refletem diferentes estados (por exemplo, "A Fazer", "Em Progresso" e "Feito")*. 
 
 <div style="text-align: center;">
-	<img src="../../zSLIDES/img/image9-projects.png" width="100%" data-preview-image>
+	<img src="https://i.ibb.co/8LNWQkzJ/image.png" width="100%" data-preview-image>
 </div>
 
 ---

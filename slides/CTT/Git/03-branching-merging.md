@@ -95,7 +95,7 @@ git branch -D nome-da-branch
 Para entender como o Git gerencia o branch ativo, é preciso conhecer o `HEAD`. O `HEAD` é um *ponteiro* que *indica em qual commit você está atualmente*. Na maioria das vezes, o `HEAD` aponta para a ponta do branch em que você está trabalhando. Quando você cria um novo commit, o ponteiro do branch avança, e o `HEAD` avança junto com ele.
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-HEAD.png" width="80%">
+    <img src="https://i.ibb.co/Ps4bRW2r/image.png" width="80%">
 </div>
 
 ---
@@ -198,7 +198,7 @@ O **`git rebase`** é uma técnica utilizada por desenvolvedores para *reorganiz
 
 Antes
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/rebase-antes.png" width="100%">
+    <img src="https://i.ibb.co/bjKkYtP6/image.png" width="100%">
 </div>
 
 
@@ -208,7 +208,7 @@ Antes
 Depois
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/rebase-depois.png" width="80%">
+    <img src="https://i.ibb.co/99PD0tRV/image.png" width="80%">
 </div>
 
 ---

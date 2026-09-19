@@ -60,7 +60,7 @@ Dentre essas três áreas, o desenvolvedor *acessa apenas o diretório de trabal
 Antes de fazer um commit devemos executar um `add`, para salvar o conteúdo do arquivo no index. Feito isso, podemos usar um `commit` para salvar no repositório local a versão adicionada ao index. Esse fluxo é ilustrado na próxima figura.
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image3.png" width="60%">
+    <img src="https://i.ibb.co/jkVdsRRh/image.png" width="40%">
 </div>
 
 ---

@@ -39,7 +39,7 @@ Branches de funcionalidade (`feature`): nascem de `develop` e devem ser criados 
 ---
 
 <div style="text-align: center;">
-    <img src="../../zSLIDES/img/image-gitflow.png" width="80%">
+    <img src="https://i.ibb.co/Pv8TtcpF/image.png" width="80%">
 </div>
 
 ---

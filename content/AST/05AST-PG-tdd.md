@@ -12,7 +12,7 @@ submission:
 
 # TDD
 
-## Exemplo Validador de Senha!
+## Exemplo Validador de Senha
 
 Este exemplo é intuitivo, pois lida com regras de negócio comuns, e permite demonstrar o ciclo Red, Green, Refactor de forma incremental, adicionando complexidade passo a passo. Lei e compreenda ele na sequência, de cima pra baixo, do começo ao fim.
 
