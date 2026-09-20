@@ -42,6 +42,20 @@ test("presentation: lista gera um deck por arquivo", () => {
 
   assert.match(html, /data-decks="2"/)
   assert.equal((html.match(/class="reveal"/g) ?? []).length, 2)
+
+  // Contar os decks não basta: `readDeck` devolve "" quando o arquivo não existe (só reclama no
+  // console), então renomear a pasta em `slides/` publicaria um deck VAZIO com o teste verde.
+  const decks = [...html.matchAll(/<script type="text\/template">([\s\S]*?)<\/script>/g)].map(
+    (match) => match[1].trim(),
+  )
+  assert.equal(decks.length, 2)
+  decks.forEach((conteudo, indice) => {
+    assert.ok(
+      conteudo.length > 0,
+      `deck ${indice + 1} saiu vazio: o arquivo de slides não existe ` +
+        "(pasta de `slides/` renomeada? atualize o caminho neste teste)",
+    )
+  })
 })
 
 test("presentation: sem frontmatter não renderiza nada", () => {

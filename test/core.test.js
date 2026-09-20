@@ -38,6 +38,32 @@ function publicaveis(dir) {
   })
 }
 
+/**
+ * Acha uma página pelo NOME DO ARQUIVO, nunca pelo caminho da pasta.
+ *
+ * Fixar a pasta no teste já quebrou o deploy duas vezes: `6c87731` renomeou `CTT/Git` →
+ * `CTT/Git e Github` e `90a82cb` renomeou para `CTT/Git-Github` — este último só trocou o literal,
+ * então a armadilha continuou armada (e disparou de novo). O nome do arquivo é estável; a pasta não.
+ *
+ * Se o arquivo não existir, falha com mensagem explícita em vez do
+ * `Cannot read properties of undefined (reading 'url')` que o `find()` devolvia.
+ */
+function porArquivo(nomeArquivo, entradas = getEntries()) {
+  const alvo = `${nomeArquivo}.md`
+  const achadas = entradas.filter(
+    (entrada) => entrada.file === alvo || entrada.file.endsWith(`/${alvo}`),
+  )
+
+  assert.equal(
+    achadas.length,
+    1,
+    `esperava exatamente 1 página "${alvo}" em content/, achei ${achadas.length}` +
+      (achadas.length === 0 ? " — o arquivo foi renomeado ou movido de pasta?" : ""),
+  )
+
+  return achadas[0]
+}
+
 const pagina = (dir, slug, title, order) => ({
   kind: "page",
   isIndex: slug === "index",
@@ -104,8 +130,15 @@ test("getEntries lê o conteúdo real, ignora oculto/ e monta as URLs", () => {
   const home = entradas.find((entrada) => entrada.isIndex)
   assert.equal(home.url, "/")
 
-  const branchMerge = entradas.find((entrada) => entrada.slug === "CTT/Git e Github/04CTT-PG-branch-merge")
-  assert.equal(branchMerge.url, "/CTT/Git e Github/04CTT-PG-branch-merge/")
+  const branchMerge = porArquivo("04CTT-PG-branch-merge", entradas)
+  // A pasta é conferida por FORMA (uma subpasta de CTT), não por nome: renomear a pasta não
+  // pode deixar o deploy vermelho.
+  assert.match(
+    branchMerge.slug,
+    /^CTT\/[^/]+\/04CTT-PG-branch-merge$/,
+    "a página vive em content/CTT/<pasta>/",
+  )
+  assert.equal(branchMerge.url, `/${branchMerge.slug}/`)
   assert.equal(branchMerge.title, "Branching e Merging")
   assert.equal(branchMerge.frontmatter.order, 6)
   assert.ok(branchMerge.breadcrumbs.length >= 3)
@@ -115,9 +148,9 @@ test("getEntries lê o conteúdo real, ignora oculto/ e monta as URLs", () => {
 
 test("appsScript: entradas com frontmatter de componentes preservam o contrato", () => {
   const entradas = getEntries()
-  const typst = entradas.find((entrada) => entrada.slug === "AST/06AST-PG-dubles-teste")
-  const asciinema = entradas.find((entrada) => entrada.slug === "CTT/Git e Github/01CTT-PG-controle-versao")
-  const markmap = entradas.find((entrada) => entrada.slug === "AST/00AST-PG-ast-roadmap")
+  const typst = porArquivo("06AST-PG-dubles-teste", entradas)
+  const asciinema = porArquivo("01CTT-PG-controle-versao", entradas)
+  const markmap = porArquivo("00AST-PG-ast-roadmap", entradas)
 
   assert.equal(typst.frontmatter.typst[0].name, "Exercício AST06")
   assert.equal(asciinema.frontmatter.asciinema, "asciinema/01-init_clone_commit.cast")
@@ -164,7 +197,7 @@ test("markdown: link externo abre em nova aba, interno fica na mesma", () => {
 })
 
 test("conteúdo real: links externos saem com target e internos sem", () => {
-  const pagina = getEntries().find((entrada) => entrada.slug === "ADP/02ADP-PG-modelo-conceitual")
+  const pagina = porArquivo("02ADP-PG-modelo-conceitual")
 
   assert.match(pagina.html, /href="https:\/\/[^"]+" target="_blank"/)
   assert.doesNotMatch(pagina.html, /<a[^>]*href="\/[^"]*"[^>]*target=/)

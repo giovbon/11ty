@@ -9,7 +9,7 @@
     "build": "npm run clean && npm run vendor && npm run build:assets && eleventy",
     "build:assets": "node scripts/build-assets.mjs",
     "vendor": "node scripts/vendor-libs.mjs",
-    "test": "node --test \"test/**/*.test.js\"",
+    "test": "node scripts/test.mjs",
     "clean": "node -e \"require('fs').rmSync('_site',{recursive:true,force:true})\""
   },
   "devDependencies": {

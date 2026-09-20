@@ -1,12 +1,13 @@
 name: Deploy site-11ty to GitHub Pages
 
-# Este workflow pertence ao repositório do site-11ty (giovbon/11ty), que é
-# INDEPENDENTE do repositório do Quartz (giovbon/impacta). O Pages daqui publica
-# só este site.
+# Este workflow pertence ao repositório do site-11ty. O clone local ainda aponta para
+# `git@github.com:giovbon/11ty.git`, mas esse nome foi renomeado: a API responde 301 e o nome
+# canônico é **giovbon/impacta** (verificado 2026-09-20). O GitHub redireciona o push antigo.
 #
-# Publicado em: https://giovbon.github.io/impacta/
-# (por isso BASE_URL=/11ty/ — a base precisa bater com o nome do repositório,
-# senão o site publica com todos os links e assets internos apontando errado)
+# Publicado em: https://giovbon.github.io/impacta/ — confirmado em 2026-09-20 (/impacta/ responde
+# 200 já com `<meta name="base-url" content="/impacta/">`; https://giovbon.github.io/11ty/ dá 404).
+# Por isso `BASE_URL: /impacta/` na etapa de build: a base tem de bater com o CAMINHO do Pages,
+# senão o site publica com todos os links e assets internos apontando errado.
 #
 # Não usa nenhum secret: a autenticação é feita pelo OIDC do próprio Actions.
 #
