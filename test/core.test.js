@@ -104,8 +104,8 @@ test("getEntries lê o conteúdo real, ignora oculto/ e monta as URLs", () => {
   const home = entradas.find((entrada) => entrada.isIndex)
   assert.equal(home.url, "/")
 
-  const branchMerge = entradas.find((entrada) => entrada.slug === "CTT/Git/04CTT-PG-branch-merge")
-  assert.equal(branchMerge.url, "/CTT/Git/04CTT-PG-branch-merge/")
+  const branchMerge = entradas.find((entrada) => entrada.slug === "CTT/Git e Github/04CTT-PG-branch-merge")
+  assert.equal(branchMerge.url, "/CTT/Git e Github/04CTT-PG-branch-merge/")
   assert.equal(branchMerge.title, "Branching e Merging")
   assert.equal(branchMerge.frontmatter.order, 6)
   assert.ok(branchMerge.breadcrumbs.length >= 3)
@@ -116,7 +116,7 @@ test("getEntries lê o conteúdo real, ignora oculto/ e monta as URLs", () => {
 test("appsScript: entradas com frontmatter de componentes preservam o contrato", () => {
   const entradas = getEntries()
   const typst = entradas.find((entrada) => entrada.slug === "AST/06AST-PG-dubles-teste")
-  const asciinema = entradas.find((entrada) => entrada.slug === "CTT/Git/01CTT-PG-controle-versao")
+  const asciinema = entradas.find((entrada) => entrada.slug === "CTT/Git e Github/01CTT-PG-controle-versao")
   const markmap = entradas.find((entrada) => entrada.slug === "AST/00AST-PG-ast-roadmap")
 
   assert.equal(typst.frontmatter.typst[0].name, "Exercício AST06")
