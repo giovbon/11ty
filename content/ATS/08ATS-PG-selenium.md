@@ -1,12 +1,12 @@
 ---
-title: Selenium 1
-presentation: "slides/AST/07AST-SL-selenium1.md"
-order: 5
+title: Selenium
+presentation: "slides/ATS/07ATS-SL-selenium1.md"
+order: 8
 typst: 
-- path: "typs/AST/AST07.typ"
-  name: "Exercício AST07"
+- path: "typs/AST/ATS08.typ"
+  name: "Exercício ATS08"
 submission: 
-  - "AST07"
+  - "AST08"
 codes: "codes/selenium1.md"
 ---
 

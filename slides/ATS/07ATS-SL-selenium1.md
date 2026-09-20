@@ -1,9 +1,12 @@
-<!-- .slide: data-background-image="https://images.squarespace-cdn.com/content/v1/5fb4ea8933ae6c208c3dac41/1656395530398-NQT3HSOMM2GVD84P8FXM/car2car" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">ATS · Automação de Testes de Software</p>
 
-<div class="glass-box">
-    <h1>selenium</h1>
-    <img src="https://simpleicons.org/icons/selenium.svg" class="glass-icon imagem-invertida" />
-</div>
+# Selênium
+
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">07</p>
 
 ---
 
@@ -41,7 +44,7 @@ O **Selenium** é um ecossistema de ferramentas voltado para a *automação de n
 Lembrando da pirâmide de testes:
 
 <div style="text-align: center;">
-    <img src="../zSLIDES/img/piram-tests.png" width="60%">
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn-wcsm.alura.com.br%2F2025%2F04%2Fimagem1-99.png&f=1&nofb=1&ipt=4a50b145c15936bdbecf38f764362ad0eecffd8e528451a19ce5cc949fd6e469" width="70%" data-preview-image>
 </div>
 
 

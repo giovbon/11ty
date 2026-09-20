@@ -192,18 +192,20 @@ Sem isso os `---` do frontmatter viram separadores e produzem **slides vazios no
 
 ```html
 <div class="asciinema-container">
-  <div class="asciinema-wrapper">
-    <h4 class="asciinema-title">01-init_clone_commit</h4>   <!-- ">" vem de CSS ::before -->
-    <div class="asciinema" data-src="/static/asciinema/01-init_clone_commit.cast"
-         data-theme="asciinema" data-speed="1" data-idle-time-limit="2"
-         data-poster="npt:0:0" data-fit="width">
+  <details class="asciinema-item">
+    <summary class="asciinema-summary">
+      <span class="asciinema-summary__icone" aria-hidden="true"></span>  <!-- ">" vem de CSS ::before -->
+      <h4 class="asciinema-title">01-init_clone_commit</h4>
+      <span class="asciinema-summary__seta" aria-hidden="true"></span>  <!-- seta desenhada em CSS -->
+    </summary>
+    <div class="asciinema" data-src="/static/asciinema/01-init_clone_commit.cast">
       <div class="asciinema-loading">Carregando gravação do terminal...</div>
     </div>
-  </div>
+  </details>
 </div>
 ```
 
-**Cliente**: usar `window.AsciinemaPlayer.create(src, el, { theme:"asciinema", speed:1, idleTimeLimit:2, poster:"npt:0:0", fit:"width", terminalFontSize:"14px" })`; biblioteca vendorizada (`asciinema-player.min.js` + `.css` carregados no `<head>`).
+**Cliente**: usar `window.AsciinemaPlayer.create(src, el, { theme:"asciinema", speed:1, idleTimeLimit:2, poster:"npt:0:0", fit:"width", terminalFontSize:"14px" })`. A gravação vem **fechada** (`<details>` sem `open`): o player só é montado ao abrir e o `asciinema-player.min.js` (155 KB) só é baixado nesse momento — o `<head>` leva apenas o CSS, que é leve. Fechar a sanfona pausa a gravação.
 **Título**: nome do arquivo sem extensão, primeira letra maiúscula, de `asciinema/<x>.cast` → `X`.
 
 ### 6.3 Mindmap (markmap)

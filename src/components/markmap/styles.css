@@ -21,6 +21,17 @@
   width: 100%;
   height: 100%;
   font-family: var(--font-sans);
+  cursor: grab;
+}
+
+/* O conteúdo do mapa vive num <g> cujo `transform` muda a cada frame de arrasto:
+   promover a camada evita repintar o SVG inteiro a cada movimento. */
+.markmap svg > g {
+  will-change: transform;
+}
+
+.markmap.markmap-arrastando svg {
+  cursor: grabbing;
 }
 
 .markmap .markmap-node div {

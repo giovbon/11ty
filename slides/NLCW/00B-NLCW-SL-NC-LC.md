@@ -1,9 +1,12 @@
-<!-- .slide: data-background-image="https://i.ibb.co/sdTzbgWb/watermark-removed-Gemini-Generated-Image-m61yahm61yahm61y.png" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">No/Low-Code Workflow Logic</p>
 
+# Low-Code/No-Code
 
-<div class="glass-box">
-    <h1>Low-Code/No-Code</h1>
-</div>
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">01</p>
 
 ---
 

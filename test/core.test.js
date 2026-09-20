@@ -1,5 +1,8 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 
 import {
   asList,
@@ -10,6 +13,30 @@ import {
 } from "../src/_lib/content.js"
 import { isExternalUrl } from "../src/_lib/urls.js"
 import { getBaseUrl, isExternal, resolveUrl } from "../src/client/shared/urls.js"
+
+const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
+
+/**
+ * Quantas páginas o conteúdo tem hoje, espelhando as exclusões de `src/_lib/content.js`
+ * (`oculto/`, `demonstracao.md`, só `.md`).
+ *
+ * Fixar o número no teste quebra a cada aula nova; contar no disco mantém o teste útil: se
+ * uma página de `oculto/` vazar para o site, a contagem real passa a maior que esta e falha.
+ */
+function contarPublicaveis(dir = path.join(RAIZ, "content")) {
+  return publicaveis(dir).length
+}
+
+/** Lista os `.md` publicáveis (a recursão devolve listas; o total sai no fim). */
+function publicaveis(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((item) => {
+    if (item.isDirectory()) {
+      return item.name === "oculto" ? [] : publicaveis(path.join(dir, item.name))
+    }
+    if (!item.name.toLowerCase().endsWith(".md")) return []
+    return item.name === "demonstracao.md" ? [] : [item.name]
+  })
+}
 
 const pagina = (dir, slug, title, order) => ({
   kind: "page",
@@ -65,8 +92,13 @@ test("buildNavigation expõe só o nível raiz", () => {
 test("getEntries lê o conteúdo real, ignora oculto/ e monta as URLs", () => {
   const entradas = getEntries()
 
-  assert.equal(entradas.length, 39, "39 páginas publicáveis (o resto é oculto/)")
+  assert.equal(
+    entradas.length,
+    contarPublicaveis(),
+    "toda página publicável do conteúdo vira entrada (e nada de oculto/ entra)",
+  )
   assert.ok(entradas.every((entrada) => !entrada.file.includes("oculto")))
+  assert.ok(entradas.every((entrada) => !entrada.file.includes("demonstracao")))
   assert.ok(entradas.every((entrada) => entrada.file.endsWith(".md")))
 
   const home = entradas.find((entrada) => entrada.isIndex)

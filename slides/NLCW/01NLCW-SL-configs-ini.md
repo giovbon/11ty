@@ -1,9 +1,12 @@
-<!-- .slide: data-background-image="https://i.ibb.co/sdTzbgWb/watermark-removed-Gemini-Generated-Image-m61yahm61yahm61y.png" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">No/Low-Code Workflow Logic</p>
 
+# Configurações Iniciais no FlutterFlow
 
-<div class="glass-box">
-    <h1>Configurações Iniciais no FlutterFlow</h1>
-</div>
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">02</p>
 
 ---
 

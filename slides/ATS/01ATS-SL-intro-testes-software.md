@@ -1,8 +1,12 @@
-<!-- .slide: data-background-image="https://images.squarespace-cdn.com/content/v1/5fb4ea8933ae6c208c3dac41/1656395530398-NQT3HSOMM2GVD84P8FXM/car2car" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">ATS · Automação de Testes de Software</p>
 
-<div class="glass-box">
-    <h1>Introdução aos Testes de Software</h1>
-</div>
+# Introdução aos Testes de Software
+
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">01</p>
 
 
 ---

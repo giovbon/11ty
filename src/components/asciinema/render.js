@@ -79,12 +79,16 @@ export function renderAsciinema(frontmatter) {
 
   const players = dados.gravacoes
     .map(
-      (gravacao) => `    <div class="asciinema-wrapper">
-      <h4 class="asciinema-title">${gravacao.titulo}</h4>
+      (gravacao) => `    <details class="asciinema-item">
+      <summary class="asciinema-summary">
+        <span class="asciinema-summary__icone" aria-hidden="true"></span>
+        <h4 class="asciinema-title">${gravacao.titulo}</h4>
+        <span class="asciinema-summary__seta" aria-hidden="true"></span>
+      </summary>
       <div class="asciinema" data-src="${gravacao.url}">
         <div class="asciinema-loading">Carregando gravação do terminal...</div>
       </div>
-    </div>`,
+    </details>`,
     )
     .join("\n")
 

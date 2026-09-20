@@ -13,10 +13,9 @@
   {% if item.frontmatter.codes or item.frontmatter.presentation %}
     <script src="{{ '/static/lib/reveal/highlight.min.js' | link }}"></script>
   {% endif %}
-  {# asciinema: player vendorizado, só nas páginas com gravações #}
+  {# asciinema: só o CSS (leve); o player (155 KB) é baixado quando alguém abre uma gravação #}
   {% if item.frontmatter.asciinema %}
     <link rel="stylesheet" href="{{ '/static/lib/asciinema/asciinema-player.css' | link }}" />
-    <script src="{{ '/static/lib/asciinema/asciinema-player.min.js' | link }}"></script>
   {% endif %}
 {% endblock %}
 

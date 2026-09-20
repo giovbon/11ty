@@ -1,10 +1,12 @@
-<!-- .slide: data-background-image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">CTT · Collaboration Tools for Teams</p>
 
-<div class="glass-box">
-    <h1>Gerenciamento Eficiente com GitHub CLI e Git</h1>
-    <img src="https://simpleicons.org/icons/git.svg" alt="Pytest" class="glass-icon imagem-invertida" />
-    <img src="https://simpleicons.org/icons/github.svg" alt="Pytest" class="glass-icon imagem-invertida" />
-</div>
+# Gerenciamento Eficiente com GitHub CLI e Git
+
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">07</p>
 
 ---
 

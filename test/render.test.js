@@ -87,8 +87,11 @@ test("asciinema: aceita URL remota e marca o que não existe", () => {
   assert.equal(ausente.gravacoes[0].existe, false)
 })
 
-test("asciinema: HTML traz título, data-src e aviso de carregamento", () => {
+test("asciinema: HTML traz sanfona fechada, título, data-src e aviso de carregamento", () => {
   const html = renderAsciinema({ asciinema: "asciinema/08-branches.cast" })
+  assert.match(html, /<details class="asciinema-item">/)
+  assert.doesNotMatch(html, /<details[^>]*\sopen/) // fechado por padrão
+  assert.match(html, /<summary class="asciinema-summary">/)
   assert.match(html, /class="asciinema-title">08-branches</)
   assert.match(html, /data-src="\/static\/asciinema\/08-branches\.cast"/)
   assert.match(html, /asciinema-loading/)

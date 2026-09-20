@@ -1,36 +1,105 @@
-/* Componente `asciinema` — moldura das gravações de terminal (.cast). */
+/* Componente `asciinema` — gravações de terminal (.cast) em sanfona.
+
+   Fechadas por padrão: gravação é material de consulta, não leitura linear. O cabeçalho
+   segue a identidade do site (borda 1px + espaço no lugar de sombra, mono para o que é
+   terminal, acento para o que está ativo). */
 
 .asciinema-container {
   display: flex;
   flex-direction: column;
-  gap: var(--s6);
+  gap: var(--s3);
   margin: var(--s6) 0;
 }
 
-.asciinema-wrapper {
-  width: 100%;
+.asciinema-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.asciinema-item:hover,
+.asciinema-item[open] {
+  border-color: var(--border-strong);
+}
+
+/* Cabeçalho clicável: ícone + título + seta */
+.asciinema-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  cursor: pointer;
+  list-style: none; /* o triângulo padrão do <summary> sai daqui */
+  user-select: none;
+  transition: background var(--transition);
+}
+
+.asciinema-summary::-webkit-details-marker {
+  display: none;
+}
+
+.asciinema-summary:hover {
+  background: var(--surface-2);
+}
+
+.asciinema-summary:focus-visible {
+  outline-offset: -2px; /* o outline global é 2px para fora; aqui fica melhor para dentro */
+}
+
+/* Janela de terminal em miniatura (o ">" que antes vinha solto no título) */
+.asciinema-summary__icone {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.asciinema-summary__icone::before {
+  content: ">";
 }
 
 .asciinema-title {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-  margin: 0 0 var(--s3);
-  color: var(--muted);
+  flex: 1;
+  margin: 0;
+  color: var(--text);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.asciinema-title::before {
-  content: ">";
-  color: var(--faint);
+/* Seta desenhada em CSS (não depende de fonte) que gira ao abrir */
+.asciinema-summary__seta {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-right: var(--s1);
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.asciinema-item[open] .asciinema-summary__seta {
+  border-color: var(--accent);
+  transform: rotate(45deg);
 }
 
 .asciinema {
   min-height: 120px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-top: 1px solid var(--border); /* a moldura é do `.asciinema-item` */
   background: var(--code-bg);
   overflow: hidden;
 }
