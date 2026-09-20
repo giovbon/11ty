@@ -39,8 +39,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      BASE_URL: /impacta-11ty/
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,11 +52,16 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      # Atenção: os testes esperam a base padrão ("/"). Se BASE_URL vazar para
+      # esta etapa, `getBaseUrl()`/`withPrefix()` prefixam as URLs e 5 testes
+      # de url/asciinema/typst quebram. Por isso o BASE_URL fica só no build.
       - name: Testes (módulos puros)
         run: npm test
 
       - name: Build (vendor + assets + Eleventy)
         run: npm run build
+        env:
+          BASE_URL: /impacta-11ty/
 
       - name: Conferir a saída
         run: |
