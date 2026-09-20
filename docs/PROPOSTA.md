@@ -250,6 +250,7 @@ Se o arquivo não existir, renderizar `<div class="code-explorer-error">Arquivo 
 7. Arrastar/soltar **não** existe: só botão que chama `fileInput.click()`.
 8. Mensagens de erro amigáveis para: HTTP 404 do backend, resposta "já enviou nas últimas 24h" e falha de rede.
 9. Só POST para a URL de deploy do Apps Script já existente no código atual.
+10. Atividade com `ativo = FALSE` na aba "Atividades" é **encerrada**: o formulário é escondido, com aviso no lugar, e o `submit` é recusado localmente. O backend **não** checa `ativo` — quem barra é o front. Se a consulta falhar, mantém o comportamento antigo (fail-open).
 
 ### 6.7 Navegação, listas e páginas
 

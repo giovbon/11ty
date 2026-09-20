@@ -199,8 +199,11 @@ Sobre a entrega (`submission`): o protocolo foi portado **linha a linha** de
 `quartz/components/scripts/submission.inline.ts` (XHR com `timeout`, campos repetidos na query
 string por causa do 302 do Apps Script, duplicidade de 24h tratada como sucesso, aviso extra em
 404). Verificado contra o deploy real: `listarAtividades` e `buscarAtividade` retornam os dados da
-planilha, e o POST é aceito/recusado com o JSON esperado. **Não verificado**: o caminho de sucesso
-com RA real (entrega gravada + comprovante), que exige um aluno cadastrado.
+planilha, e o POST é aceito/recusado com o JSON esperado. O **backend** (Apps Script) não vive
+neste projeto: o código dele está em `giovbon/impacta:quartz/google-sheets-apps-script.gs`, e a URL
+do Web App é a mesma nos dois sites — é lá que se mexe em planilha, colunas, `ativo` e prazos.
+**Não verificado**: o caminho de sucesso com RA real (entrega gravada + comprovante), que exige um
+aluno cadastrado.
 
 Arquivos de apoio para testar o anexo em `site-11ty/.tmp-tests/` (`real.zip`, `falso.zip`) — recrie
 `grande.zip` (>20 MB) quando precisar testar o limite de tamanho.

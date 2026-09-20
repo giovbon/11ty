@@ -173,6 +173,51 @@ function initCard(card) {
   const backBtn = card.querySelector(".back-to-selection")
   const activityHighlight = card.querySelector(".highlight-activity")
 
+  /* ── atividade encerrada (ativo = FALSE na aba "Atividades") ── */
+  // O backend grava a entrega mesmo com a atividade desativada, então quem barra
+  // é o front. Só vale quando a planilha respondeu: se `listarAtividades` falhar,
+  // nada é encerrado (mesmo fail-open do rótulo vindo do frontmatter).
+  // Chave = nome exato normalizado: o backend compara o texto inteiro, não o
+  // código — "AST06" e "AST06 ADS3-SI3 ADS4-SI4" são atividades diferentes.
+  const encerradas = new Map() // nome normalizado → nome como está na planilha
+
+  const codigoDaAtividade = (valor) => String(valor || "").trim().split(/\s+/)[0].toUpperCase()
+
+  const normalizarAtividade = (valor) => String(valor || "").trim().toLowerCase()
+
+  const estaEncerrada = (atividade) => encerradas.has(normalizarAtividade(atividade))
+
+  function limparBloqueio() {
+    formScreen?.querySelector(".submission-closed")?.remove()
+    form.style.display = ""
+  }
+
+  function bloquearEntrega() {
+    if (!formScreen || formScreen.querySelector(".submission-closed")) return
+
+    const nomes = Array.from(encerradas.values()).join(", ")
+
+    const aviso = document.createElement("div")
+    aviso.className = "submission-closed"
+    const titulo = document.createElement("strong")
+    titulo.textContent = "🚫 Atividade encerrada"
+    const texto = document.createElement("p")
+    texto.textContent = `${nomes} não recebe mais entregas. Se você precisa entregar, fale com o professor.`
+    aviso.append(titulo, texto)
+
+    formScreen.insertBefore(aviso, form)
+    // O formulário sai de cena inteiro: sem campos e sem botão, não há envio pela página.
+    form.style.display = "none"
+    submitBtn.style.display = "none"
+    submitBtn.disabled = true
+
+    if (activityHighlight && !activityHighlight.textContent.trim()) {
+      activityHighlight.textContent = nomes
+    }
+    selectionScreen?.classList.add("hidden")
+    formScreen.classList.remove("hidden")
+  }
+
   /* ── prazo ── */
   async function exibirInfoPrazo(atividade) {
     form.querySelector(".deadline-info")?.remove()
@@ -259,6 +304,12 @@ function initCard(card) {
     raValidationStatus.textContent = ""
     submitBtn.style.display = ""
     submitBtn.disabled = false
+    limparBloqueio()
+
+    if (estaEncerrada(atividade)) {
+      bloquearEntrega()
+      return
+    }
 
     exibirInfoPrazo(atividade)
   }
@@ -297,8 +348,11 @@ function initCard(card) {
       for (const item of resposta.atividades) {
         const nome = String(item?.atividade ?? "").trim()
         if (!nome) continue
-        if (item?.ativo === false || String(item?.ativo).toLowerCase() === "false") continue
-        if (!codigos.has(nome.split(/\s+/)[0].toUpperCase())) continue
+        if (!codigos.has(codigoDaAtividade(nome))) continue
+        if (item?.ativo === false || String(item?.ativo).toLowerCase() === "false") {
+          encerradas.set(normalizarAtividade(nome), nome)
+          continue
+        }
         const chave = nome.toLowerCase()
         if (vistos.has(chave)) continue
         vistos.add(chave)
@@ -308,7 +362,12 @@ function initCard(card) {
       return // consulta indisponível → mantém o rótulo do frontmatter
     }
 
-    if (lista.length === 0) return
+    if (lista.length === 0) {
+      // Nada ativo casou com o frontmatter. Se a atividade declarada é justamente
+      // a desativada, encerra em vez de deixar o formulário do frontmatter valendo.
+      if (estaEncerrada(form.getAttribute("data-activity"))) bloquearEntrega()
+      return
+    }
 
     const activityList = card.querySelector(".activity-list")
     const template = activityList?.querySelector(".select-activity-btn")
@@ -398,6 +457,14 @@ function initCard(card) {
     evento.preventDefault()
 
     const atividade = form.getAttribute("data-activity")
+
+    // Barreira final: a consulta à planilha é assíncrona, então a atividade pode
+    // ter sido encerrada depois de a página abrir.
+    if (estaEncerrada(atividade)) {
+      bloquearEntrega()
+      return
+    }
+
     const ra = raInput.value.trim()
 
     if (!/^[0-9]{7}$/.test(ra)) {

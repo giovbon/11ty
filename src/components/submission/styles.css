@@ -250,6 +250,22 @@
   color: var(--muted);
 }
 
+/* Atividade encerrada (ativo = FALSE na planilha): o formulário sai de cena */
+.submission-card .submission-closed {
+  margin-top: var(--s4);
+  padding: var(--s3);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  background: rgba(247, 118, 142, 0.1);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.submission-card .submission-closed p {
+  margin: var(--s1) 0 0;
+  color: var(--muted);
+}
+
 /* Status e comprovante */
 .submission-card .status-message {
   display: none;
