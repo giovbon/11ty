@@ -278,6 +278,21 @@ npm run clean   # remove _site, .cache
 - `addPassthroughCopy`: `content/**` (não-`.md`) → `_site/static/**` removendo o prefixo `content/`; `src/assets/static/**` → `_site/static/**`.
 - Deploy: GitHub Actions publicando `site-11ty/_site` (ou pasta `docs/`), sem tocar no deploy atual até haver paridade.
 
+### 7.1 Favicon e ícones
+
+`src/assets/static/favicon.svg` é a **fonte da verdade** e é servido como está (`/static/favicon.svg`): quadrado de canto arredondado em `--accent` com o prompt `>_` em `--bg` — a marca da sidebar (`.brand__mark`) crescida. Quadrado sólido de propósito: aparece bem em aba clara e escura sem precisar de `prefers-color-scheme`; o `_` tira a ambiguidade de "play" que o `>` sozinho tem em 16px.
+
+Os dois derivados são gerados **uma vez e commitados** — nenhum rasterizador entra no build:
+
+| Arquivo | Tamanho | Para quê |
+|---|---|---|
+| `favicon.ico` | 16 + 32 + 48 (PNG embutido no container ICO) | navegador antigo, atalho, barra de tarefas |
+| `apple-touch-icon.png` | 180×180, **opaco e sem cantos arredondados** | o iOS aplica a própria máscara; PNG transparente vira fundo preto |
+
+No `<head>` (`src/_includes/layouts/base.njk`) os três passam pelo filtro `| link` — obrigatório, porque o site é publicado em subpasta (`/11ty/`) — com o mesmo `?v=` dos outros assets, mais `<meta name="theme-color">` casando com o `--bg`.
+
+Para regerar: renderizar o SVG num contexto 1:1 (`deviceScaleFactor: 1`, `omitBackground` nos tamanhos pequenos para os cantos ficarem transparentes) e montar o `.ico` com cabeçalho `ICONDIR` + uma `ICONDIRENTRY` por PNG.
+
 ---
 
 ## 8. Design system (paridade visual)

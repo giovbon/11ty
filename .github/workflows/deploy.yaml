@@ -4,7 +4,7 @@ name: Deploy site-11ty to GitHub Pages
 # INDEPENDENTE do repositório do Quartz (giovbon/impacta). O Pages daqui publica
 # só este site.
 #
-# Publicado em: https://giovbon.github.io/11ty/
+# Publicado em: https://giovbon.github.io/impacta/
 # (por isso BASE_URL=/11ty/ — a base precisa bater com o nome do repositório,
 # senão o site publica com todos os links e assets internos apontando errado)
 #
@@ -66,7 +66,7 @@ jobs:
       - name: Build (vendor + assets + Eleventy)
         run: npm run build
         env:
-          BASE_URL: /11ty/
+          BASE_URL: /impacta/
 
       - name: Conferir a saída
         run: |

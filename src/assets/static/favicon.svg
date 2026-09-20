@@ -1,0 +1,25 @@
+<!-- Favicon do site: a marca da sidebar (quadrado de canto arredondado no acento do tema,
+     #7aa2f7) crescida para virar ícone, com o prompt de terminal (#0e0f11) dentro dela.
+
+     Geometria pensada para 16px, o tamanho real de uma aba: traço de 7.5 em 64 e o cursor
+     separado por alguns pixels de respiro. Sem o cursor, o sinal de maior sozinho lê como
+     botão de play. O quadrado é sólido de propósito, para aparecer bem em aba clara e escura.
+
+     ATENÇÃO ao editar: isto é XML e comentário de XML não aceita dois hífens seguidos (era
+     o que quebrava este arquivo, ao citar os nomes dos tokens do tema). O navegador servia
+     200 e recusava renderizar, sem erro visível na página.
+
+     Fonte da verdade de apple-touch-icon.png e favicon.ico, gerados uma vez e commitados
+     (ver docs/PROPOSTA.md, seção 7.1). -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#7aa2f7" />
+  <path
+    d="M19 20 L32 31 L19 42"
+    fill="none"
+    stroke="#0e0f11"
+    stroke-width="7.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <rect x="35" y="39" width="12" height="5" rx="2.5" fill="#0e0f11" />
+</svg>

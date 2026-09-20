@@ -6,6 +6,13 @@
     <title>{% if item %}{{ item.title }} · {% elif folder %}{{ folder.name }} · {% endif %}{{ site.title }}</title>
     <meta name="description" content="{% if item and item.frontmatter.description %}{{ item.frontmatter.description }}{% else %}{{ site.description }}{% endif %}" />
     <meta name="color-scheme" content="dark" />
+    {# Favicon: SVG (navegador atual) + ICO (atalho/antigo) + PNG para a tela inicial do iOS.
+       O `?v=` é o mesmo carimbo do CSS/JS: se o ícone mudar, o cache do navegador não prende. #}
+    <link rel="icon" href="{{ '/static/favicon.svg' | link }}?v={{ assetStamp.version }}" type="image/svg+xml" />
+    <link rel="icon" href="{{ '/static/favicon.ico' | link }}?v={{ assetStamp.version }}" />
+    <link rel="apple-touch-icon" href="{{ '/static/apple-touch-icon.png' | link }}?v={{ assetStamp.version }}" />
+    {# Cor da barra do navegador no celular, casando com o --bg do tema #}
+    <meta name="theme-color" content="#0e0f11" />
     {# Base do site: usada pelos scripts de cliente (deploy em subpasta) #}
     <meta name="base-url" content="{{ '/' | link }}" />
     <link rel="stylesheet" href="{{ '/static/app.css' | link }}?v={{ assetStamp.version }}" />
