@@ -1,12 +1,17 @@
 name: Deploy site-11ty to GitHub Pages
 
-# Este workflow pertence ao repositório do site-11ty (giovbon/impacta-11ty),
-# que é INDEPENDENTE do repositório do Quartz. O Pages de lá publica só este site.
+# Este workflow pertence ao repositório do site-11ty (giovbon/11ty), que é
+# INDEPENDENTE do repositório do Quartz (giovbon/impacta). O Pages daqui publica
+# só este site.
 #
-# Publicado em: https://giovbon.github.io/impacta-11ty/
-# (por isso BASE_URL=/impacta-11ty/ — se o repositório tiver outro nome, ajuste aqui)
+# Publicado em: https://giovbon.github.io/11ty/
+# (por isso BASE_URL=/11ty/ — a base precisa bater com o nome do repositório,
+# senão o site publica com todos os links e assets internos apontando errado)
 #
 # Não usa nenhum secret: a autenticação é feita pelo OIDC do próprio Actions.
+#
+# Pré-requisito: em Settings → Pages, o Source tem de ser "GitHub Actions".
+# Sem isso, o `configure-pages` falha com "Get Pages site failed ... Not Found".
 
 on:
   push:
@@ -61,13 +66,16 @@ jobs:
       - name: Build (vendor + assets + Eleventy)
         run: npm run build
         env:
-          BASE_URL: /impacta-11ty/
+          BASE_URL: /11ty/
 
       - name: Conferir a saída
         run: |
           test -f _site/index.html || { echo "::error::_site/index.html não foi gerado"; exit 1; }
           echo "Páginas geradas: $(find _site -name '*.html' | wc -l)"
 
+      # Se esta etapa falhar com "Get Pages site failed ... Not Found", é porque o
+      # repositório ainda não tinha Pages habilitado. O `enablement: true` não
+      # resolve aqui: ele exige um PAT, não o GITHUB_TOKEN do próprio Actions.
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 

@@ -80,7 +80,7 @@ um desses arquivos reconstrói o site e **o navegador recarrega sozinho**.
 ```bash
 ./run.sh                            # porta 8080, base /
 PORT=8081 ./run.sh                  # outra porta
-BASE_URL=/impacta-11ty/ ./run.sh    # simular o Pages em subpasta
+BASE_URL=/11ty/ ./run.sh            # simular o Pages em subpasta
 ```
 
 Armadilhas que já estão resolvidas (todas custaram diagnóstico):
@@ -96,16 +96,17 @@ Armadilhas que já estão resolvidas (todas custaram diagnóstico):
 
 ### 4.2 Publicação (GitHub Pages)
 
-O `site-11ty` é um **repositório separado** (`giovbon/impacta-11ty`), com Pages próprio: o Pages do
+O `site-11ty` é um **repositório separado** (`giovbon/11ty`), com Pages próprio: o Pages do
 repositório `impacta` continua servindo o Quartz, sem os dois se sobrescreverem. O workflow
 [`.github/workflows/deploy.yaml`](.github/workflows/deploy.yaml) roda `npm ci`, `npm test`,
-`npm run build` (com `BASE_URL=/impacta-11ty/`) e publica `_site/` com `actions/deploy-pages`.
+`npm run build` (com `BASE_URL=/11ty/`) e publica `_site/` com `actions/deploy-pages`.
 **Sem secrets**: a autenticação é OIDC do próprio Actions.
 
-Para ligar: criar o repositório vazio, adicionar o remoto, fazer push da `main` e, em
-*Settings → Pages*, escolher **Source: GitHub Actions**. A URL final é
-`https://giovbon.github.io/impacta-11ty/` — se o nome do repositório for outro, ajuste o `BASE_URL`
-no bloco `env:` do workflow.
+Para ligar: criar o repositório vazio, adicionar o remoto e, em *Settings → Pages*, escolher
+**Source: GitHub Actions** — isso **antes** de o workflow rodar: se o Pages ainda não estiver
+habilitado, o `configure-pages` falha com `Not Found`. Só então fazer push da `main`. A URL final é
+`https://giovbon.github.io/11ty/` — se o nome do repositório mudar, ajuste o `BASE_URL` no bloco
+`env:` do workflow.
 
 ### 4.3 Navegação e leitura
 

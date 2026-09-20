@@ -26,7 +26,7 @@ navegador recarrega sozinho**. Opções:
 
 ```bash
 PORT=8081 ./run.sh                  # outra porta
-BASE_URL=/impacta-11ty/ ./run.sh    # simular o Pages em subpasta
+BASE_URL=/11ty/ ./run.sh            # simular o Pages em subpasta
 ```
 
 > Em `/mnt/c` (WSL) o filesystem não emite eventos de arquivo. O `eleventy.config.js` liga o
@@ -36,14 +36,18 @@ BASE_URL=/impacta-11ty/ ./run.sh    # simular o Pages em subpasta
 ## Publicação
 
 O site é publicado pelo GitHub Actions a partir de um **repositório separado**
-(`giovbon/impacta-11ty`), então o Pages do repositório `impacta` (Quartz) não é afetado:
+(`giovbon/11ty`), então o Pages do repositório `impacta` (Quartz) não é afetado:
 [`.github/workflows/deploy.yaml`](.github/workflows/deploy.yaml) roda `npm ci`, `npm test`,
-`npm run build` com `BASE_URL=/impacta-11ty/` e publica `_site/`. Sem secrets (OIDC).
+`npm run build` com `BASE_URL=/11ty/` e publica `_site/`. Sem secrets (OIDC).
+
+Antes do primeiro deploy, o Pages do repositório precisa estar habilitado com
+*Source: GitHub Actions* (Settings → Pages): se o job rodar com o Pages ainda desligado,
+o `configure-pages` falha com `Not Found`.
 
 Para um build local igual ao de produção:
 
 ```bash
-BASE_URL=/impacta-11ty/ npm run build
+BASE_URL=/11ty/ npm run build
 ```
 
 ## Estrutura
