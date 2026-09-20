@@ -1,8 +1,12 @@
-<!-- .slide: data-background-image="https://i.ibb.co/mrbpyRNH/AAGemini-Generated-Image-lsw6plsw6plsw6pl.png" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">AST · Automated Software Testing</p>
 
-<div class="glass-box">
-    <h1>tdd</h1>
-</div>
+# TDD
+
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">05</p>
 
 ---
 

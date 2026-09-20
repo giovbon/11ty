@@ -76,6 +76,45 @@ function mostrarErro(container, mensagem) {
   container.innerHTML = `<div class="markmap-erro">${mensagem}</div>`
 }
 
+/**
+ * Deixa o mapa ser arrastado também a partir de um rótulo.
+ *
+ * O markmap-view chama `stopPropagation()` no `mousedown` de cada `foreignObject`
+ * (o rótulo do nó) e do círculo — com isso o d3-zoom, que escuta no `<svg>`, nunca
+ * recebe o evento, e arrastar em cima de um rótulo não move nada. Como um mapa
+ * mental é quase todo rótulo, o resultado prático é "não dá para arrastar".
+ *
+ * A saída é ouvir em captura (antes do `stopPropagation` do markmap) e reinjetar
+ * o mesmo `mousedown` direto no `<svg>`, para o gesto do d3-zoom começar normal.
+ *
+ * Efeito colateral aceito: o texto de um nó deixa de ser selecionável com o mouse
+ * (o `preventDefault` mata a seleção) — arrastar o mapa vale mais aqui.
+ */
+function permitirArrastoSobreOsNos(svg) {
+  svg.addEventListener(
+    "mousedown",
+    (evento) => {
+      if (evento._doMarkmap) return // é a nossa própria reinjeção
+      if (evento.button !== 0 || evento.defaultPrevented) return
+      if (!evento.target?.closest?.(".markmap-node")) return // o fundo já funciona sozinho
+
+      evento.preventDefault()
+      const copia = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        clientX: evento.clientX,
+        clientY: evento.clientY,
+        button: 0,
+        buttons: 1,
+      })
+      copia._doMarkmap = true
+      svg.dispatchEvent(copia)
+    },
+    true, // captura: roda antes do stopPropagation do markmap
+  )
+}
+
 async function renderizarMapa(container) {
   let markdown = container.querySelector('script[type="text/markdown"]')?.textContent ?? ""
   const src = container.dataset.src
@@ -100,6 +139,7 @@ async function renderizarMapa(container) {
   const { root } = new Transformer().transform(markdown)
   const markmap = Markmap.create(svg, OPCOES, root)
 
+  permitirArrastoSobreOsNos(svg)
   adicionarControles(container, markmap)
   window.setTimeout(() => markmap.fit(), 300)
 }

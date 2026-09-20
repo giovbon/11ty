@@ -51,8 +51,6 @@ Execute com  `python3 <nome-arquivo>>.py`.
 
 Deverá ser aberto o navegador e depois fechado e no final impresso: `Sucesso! Título: Google`.
 
----
-
 ## Testando Locators
 
 O script apresentado ensina a abrir e fechar o navegador, mas uma automação eficaz deve simular ações humanas, como clicar em botões, preencher formulários e navegar entre páginas. Para isso, o Selenium utiliza **Locators** para identificar elementos na página, com a busca por ID sendo a mais rápida e recomendada. Em seguida, será criado um "Playground" com uma página HTML local e um script que emprega a classe `ActionChains` para realizar ações interativas de mouse e teclado.

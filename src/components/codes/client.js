@@ -1,3 +1,5 @@
+import { resolveUrl } from "../../client/shared/urls.js"
+
 /**
  * Componente `codes` — explorador de código.
  *
@@ -16,7 +18,7 @@ function carregarJSZip() {
   if (!jszipPromise) {
     jszipPromise = new Promise((resolve, reject) => {
       const script = document.createElement("script")
-      script.src = JSZIP_URL
+      script.src = resolveUrl(JSZIP_URL)
       script.onload = () => resolve(window.JSZip)
       script.onerror = () => reject(new Error("falha ao carregar o JSZip"))
       document.head.appendChild(script)
@@ -71,8 +73,13 @@ async function baixarZip(explorer, button) {
     const link = document.createElement("a")
     link.href = url
     link.download = `${nome.replace(/\.md$/, "")}.zip`
+    // O link precisa estar no documento (alguns navegadores ignoram o `download`
+    // em elemento solto) e a URL só pode ser revogada depois que a transferência
+    // começa — revogar logo após o click cancela o arquivo.
+    document.body.appendChild(link)
     link.click()
-    URL.revokeObjectURL(url)
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 10000)
     button.textContent = "✅"
   } catch (erro) {
     console.error("[codes] falha ao gerar ZIP:", erro)

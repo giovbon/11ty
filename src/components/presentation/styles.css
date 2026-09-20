@@ -377,13 +377,19 @@ precisa ser um heading de verdade (`# ...`) para aceitar `**negrito**`; dentro d
   padding: 0 9%;
 }
 
-/* Brilho radial suave no canto: dá profundidade sem imagem de fundo. */
-.deck .reveal .slide-cover::before {
-  content: "";
-  position: absolute;
-  inset: -25%;
+/* Brilho radial suave no canto da capa: dá profundidade sem imagem de fundo.
+
+   Fica na CAMADA DE FUNDO do slide. O reveal monta um `.slide-background` por
+   slide e copia para lá as classes da seção — por isso `.slide-cover` casa aqui —
+   e essa camada é dimensionada para a área inteira do deck (600px de altura).
+
+   NÃO usar `::before` na seção: a seção da capa tem a altura do CONTEÚDO (~140px,
+   e não os 600px do slide) e um `inset: -25%` mediria essa caixa pequena. Foi o
+   que aconteceu antes: o degradê virava uma elipse achatada atravessando o slide,
+   com a borda reta visível onde ela era cortada — o mesmo defeito que motivou
+   tirar o brilho de dentro do slide na regra do `.reveal::before`. */
+.deck .reveal .slide-background.slide-cover {
   background: radial-gradient(58% 58% at 18% 12%, rgba(122, 162, 247, 0.2), transparent 68%);
-  pointer-events: none;
 }
 
 .deck .reveal .slide-cover > * {

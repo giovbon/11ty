@@ -1,14 +1,14 @@
 
 
 <!-- .slide: class="slide-cover" -->
-<p class="slide-cover__kicker">ADS · Application Data Persistance</p>
+<p class="slide-cover__kicker">ADP · Application Data Persistance</p>
 
 # Apresentação
 
 <p class="slide-cover__rule"></p>
-<p class="slide-cover__sub">Como ler e construir um DER a partir do mini-mundo.</p>
-<p class="slide-cover__meta"><span>Aula 03</span><span>Prof. Giovani B.</span></p>
-<p class="slide-cover__num">03</p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">00</p>
 
 ---
 

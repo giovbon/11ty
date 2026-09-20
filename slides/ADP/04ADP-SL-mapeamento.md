@@ -1,9 +1,12 @@
-<!-- .slide: data-background-image="https://images.pexels.com/photos/17323801/pexels-photo-17323801.jpeg" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">ADP · Application Data Persistance</p>
 
+# Modelo Lógico Relacional
 
-<div class="glass-box">
-    <h1>Modelo Lógico Relacional</h1>
-</div>
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">05</p>
 
 ---
 

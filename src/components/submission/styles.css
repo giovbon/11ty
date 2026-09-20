@@ -2,7 +2,10 @@
 
 .submission-container {
   display: flex;
-  justify-content: center;
+  /* Alinhado à esquerda, junto com o título e o texto da página (era `center`,
+     que centralizava o cartão dentro da coluna de conteúdo). O cartão em si
+     não muda: continua com o mesmo tamanho, borda e espaçamento. */
+  justify-content: flex-start;
   margin: var(--s6) 0;
 }
 

@@ -1,9 +1,12 @@
-<!-- .slide: data-background-image="https://images.pexels.com/photos/17323801/pexels-photo-17323801.jpeg" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">ADP · Application Data Persistance</p>
 
+# Modelo Lógico Relacional
 
-<div class="glass-box">
-    <h1>Modelo Lógico Relacional</h1>
-</div>
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">04</p>
 
 ---
 
@@ -31,9 +34,10 @@ Com essa estrutura, é fundamental *garantir que cada tupla seja identificada de
 
 - **Superchave**: Uma superchave é um *conjunto de um ou mais atributos que, tomados coletivamente, identificam unicamente uma tupla dentro de uma relação*. Por exemplo, em uma relação `ESTUDANTE`, qualquer conjunto de atributos que inclua um identificador único, como {`CPF`, `Nome`}, é uma superchave.
 - **Chave Candidata**: É uma superchave mínima. Ela *identifica um registro de forma única usando o menor número possível de atributos* — se qualquer atributo for removido, a unicidade é perdida. Exemplo: {`CPF`}.
-- **Chave Primária** (Primary Key ou PK): é a chave candidata que o projetista do banco de dados escolhe para ser o *principal meio de identificação das tuplas* em uma relação.
 
 --
+
+- **Chave Primária** (Primary Key ou PK): é a chave candidata que o projetista do banco de dados escolhe para ser o *principal meio de identificação das tuplas* em uma relação.
 
 A escolha é estratégica e, uma vez definida, impõe uma regra fundamental conhecida como **restrição de integridade de entidade**.
 

@@ -1,9 +1,12 @@
-<!-- .slide: data-background-image="https://images.pexels.com/photos/17323801/pexels-photo-17323801.jpeg" data-background-size="cover" data-background-opacity="0.4" -->
+<!-- .slide: class="slide-cover" -->
+<p class="slide-cover__kicker">ADP · Application Data Persistance</p>
 
+# Perspectiva Histórica
 
-<div class="glass-box">
-    <h1>Perspectiva Histórica</h1>
-</div>
+<p class="slide-cover__rule"></p>
+<p class="slide-cover__sub"></p>
+<p class="slide-cover__meta"><span>Prof. Giovani B.</span></p>
+<p class="slide-cover__num">02</p>
 
 ---
 
@@ -154,12 +157,6 @@ Sua classificação divide-se em quatro categorias principais:
 - **Chave-Valor:** focados em altíssima velocidade de leitura/escrita, ex: Redis, DynamoDB.
 - **Colunar:** otimizados para grandes volumes de dados analíticos, ex: Cassandra, HBase.
 - **Grafos:** projetados para mapear relacionamentos complexos, como redes sociais, ex: Neo4j, ArangoDB.
-
---
-
-<div style="text-align: center;">
-    <img src="https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRvOHxyT3Rg4kmKiRDZEKqjGuui5lXf22Pp0DydXUlJyKu3HKDXKLoQGt4bs1zRzaWrcKB_UDvEomTdA7I" width="60%" data-preview-image>
-</div>
 
 ---
 
