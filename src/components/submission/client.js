@@ -181,6 +181,11 @@ function initCard(card) {
   // código — "AST06" e "AST06 ADS3-SI3 ADS4-SI4" são atividades diferentes.
   const encerradas = new Map() // nome normalizado → nome como está na planilha
 
+  // Motivo da última recusa do anexo. Precisa ficar guardado porque
+  // `mostrarErroArquivo` limpa o `<input type="file">`: sem isso, o submit diria
+  // "é obrigatório anexar um arquivo" quando o aluno anexou um arquivo recusado.
+  let ultimoErroArquivo = ""
+
   const codigoDaAtividade = (valor) => String(valor || "").trim().split(/\s+/)[0].toUpperCase()
 
   const normalizarAtividade = (valor) => String(valor || "").trim().toLowerCase()
@@ -297,6 +302,7 @@ function initCard(card) {
     receiptContainer.innerHTML = ""
     fileNameDisplay.textContent = "Nenhum arquivo selecionado"
     clearFileBtn.style.display = "none"
+    ultimoErroArquivo = ""
     studentNameDisplay.style.display = "none"
     nomeInput.value = ""
     confirmedNameDisplay.textContent = ""
@@ -404,6 +410,7 @@ function initCard(card) {
 
   /* ── anexo ── */
   function mostrarErroArquivo(mensagem) {
+    ultimoErroArquivo = mensagem
     fileNameDisplay.textContent = `❌ ${mensagem}`
     fileNameDisplay.style.color = "var(--danger)"
     clearFileBtn.style.display = "flex"
@@ -418,10 +425,12 @@ function initCard(card) {
         mostrarErroArquivo(erro)
         return
       }
+      ultimoErroArquivo = ""
       fileNameDisplay.textContent = `📄 ${arquivo.name}`
       fileNameDisplay.style.color = "var(--accent)"
       clearFileBtn.style.display = "flex"
     } else {
+      ultimoErroArquivo = ""
       fileNameDisplay.textContent = "Nenhum arquivo selecionado"
       fileNameDisplay.style.color = "var(--muted)"
       clearFileBtn.style.display = "none"
@@ -432,6 +441,7 @@ function initCard(card) {
     evento.preventDefault()
     evento.stopPropagation()
     fileInput.value = ""
+    ultimoErroArquivo = ""
     fileNameDisplay.textContent = "Nenhum arquivo selecionado"
     fileNameDisplay.style.color = "var(--muted)"
     clearFileBtn.style.display = "none"
@@ -484,7 +494,12 @@ function initCard(card) {
       return
     }
     if (!temLink && !temArquivo) {
-      showStatus(statusMsg, "error", "É obrigatório fornecer o link do GitHub OU anexar um arquivo ZIP.")
+      // Anexo recusado agora explica melhor que "falta anexar" (o aluno anexou).
+      showStatus(
+        statusMsg,
+        "error",
+        ultimoErroArquivo || "É obrigatório fornecer o link do GitHub OU anexar um arquivo ZIP."
+      )
       return
     }
     if (temLink) {

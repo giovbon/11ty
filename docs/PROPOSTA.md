@@ -254,11 +254,13 @@ Se o arquivo não existir, renderizar `<div class="code-explorer-error">Arquivo 
 3. Rótulo da atividade: buscar a lista real na planilha (`action=listarAtividades` no Apps Script), filtrar pelos códigos do frontmatter (o **primeiro token** é a whitelist) e usar o texto **exato** da planilha; se falhar, usar o literal do frontmatter como fallback.
 4. Campos: RA obrigatório; entrega é **link do GitHub OU arquivo `.zip`** (nunca os dois, nunca nenhum).
 5. Validação do anexo em **3 camadas**: `accept` no input, extensão `.zip`, e **assinatura real** (magic bytes `PK`) — isso bloqueia `.pdf`/`.py` renomeado para `.zip`.
-6. Limite de **20 MB** por arquivo.
-7. Arrastar/soltar **não** existe: só botão que chama `fileInput.click()`.
-8. Mensagens de erro amigáveis para: HTTP 404 do backend, resposta "já enviou nas últimas 24h" e falha de rede.
-9. Só POST para a URL de deploy do Apps Script já existente no código atual.
-10. Atividade com `ativo = FALSE` na aba "Atividades" é **encerrada**: o formulário é escondido, com aviso no lugar, e o `submit` é recusado localmente. O backend **não** checa `ativo` — quem barra é o front. Se a consulta falhar, mantém o comportamento antigo (fail-open).
+6. Tamanho: piso de **100 bytes** e teto de **20 MB** por arquivo. O piso é derivado do formato, não arbitrário (medido com o `zipfile` do Python): um ZIP **sem nenhuma entrada** tem exatamente 22 bytes (só o EOCD) e o menor ZIP possível com 1 entrada gasta `98 + 2×tamanho do nome` (110 bytes para `a.txt`, 114 para `main.py`). Abaixo de ~100 bytes, portanto, só existe upload truncado — que ainda tem a assinatura `PK` e passaria pela camada 2.
+7. **ZIP sem conteúdo é recusado** lendo o índice do arquivo (EOCD, sem lib): 0 entradas, ou todas as entradas com 0 byte descomprimido (entrega que é só a casca de pastas). **Nenhum corte por tamanho resolve isso** — um ZIP só com pastas e arquivos vazios pode ser *maior* que um ZIP válido (medido: 238 × 233 bytes). Índice ilegível **não** recusa (fail-open, igual ao resto do componente). Como a recusa limpa o `<input type="file">`, o motivo fica guardado e é ele que aparece se o aluno clicar em Confirmar Entrega.
+8. **Não existe piso de conteúdo — decisão de propósito (2026-09).** ZIP com um único arquivo de uma frase passa (medido: frase de 30 bytes = 271 bytes de `.zip`, ou seja, mais que um `main.py` de 20 linhas = 194 bytes). O container come ~120 bytes e o deflate encolhe texto repetitivo, então tamanho de `.zip` não mede tamanho de trabalho; e um piso de conteúdo recusaria resposta curta legítima. Quem pune entrega pobre é a nota/prazo, não a validação.
+9. Arrastar/soltar **não** existe: só botão que chama `fileInput.click()`.
+10. Mensagens de erro amigáveis para: HTTP 404 do backend, resposta "já enviou nas últimas 24h" e falha de rede.
+11. Só POST para a URL de deploy do Apps Script já existente no código atual.
+12. Atividade com `ativo = FALSE` na aba "Atividades" é **encerrada**: o formulário é escondido, com aviso no lugar, e o `submit` é recusado localmente. O backend **não** checa `ativo` — quem barra é o front. Se a consulta falhar, mantém o comportamento antigo (fail-open).
 
 ### 6.7 Navegação, listas e páginas
 
@@ -334,7 +336,7 @@ Execute cada item e cole a evidência (saída de comando ou trecho de HTML) no P
 - [ ] `/AST/06AST-PG-dubles-teste/` mostra o botão `Exercício AST06` (Typst) e o formulário com **2** atividades (tela de escolha).
 - [ ] `/AST/00AST-PG-ast-roadmap/` contém `.markmap-container` com `<script type="text/markdown">` não vazio e um `<svg>` gerado.
 - [ ] `/AST/07AST-PG-selenium1/` mostra o CodeExplorer com a árvore de `codes/selenium1.md` e abre arquivos no painel direito.
-- [ ] Formulário: com RA + link GitHub envia; com RA + ZIP (real) envia; com `.pdf` renomeado para `.zip` **bloqueia**; com nada **bloqueia**; com os dois **bloqueia**.
+- [ ] Formulário: com RA + link GitHub envia; com RA + ZIP (real) envia; com `.pdf` renomeado para `.zip` **bloqueia**; com ZIP vazio ou só com pastas **bloqueia**; com nada **bloqueia**; com os dois **bloqueia**.
 - [ ] Busca encontra "pytest" e leva a `/AST/02AST-PG-pytest/`.
 - [ ] `/tags/`, `/index.xml`, `/sitemap.xml`, `/404.html` respondem **200**.
 - [ ] Nenhuma página é gerada a partir de `content/**/oculto/**` nem de `demonstracao.md`.
