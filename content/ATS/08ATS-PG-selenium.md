@@ -3,10 +3,10 @@ title: Selenium
 presentation: "slides/ATS/07ATS-SL-selenium1.md"
 order: 8
 typst: 
-- path: "typs/AST/ATS08.typ"
+- path: "typs/ATS/ATS08.typ"
   name: "Exercício ATS08"
 submission: 
-  - "AST08"
+  - "ATS08"
 codes: "codes/selenium1.md"
 ---
 

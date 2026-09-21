@@ -5,6 +5,12 @@
   flex-wrap: wrap;
   gap: var(--s3);
   margin: var(--s5) 0;
+
+  /* Ritmo do convite (um lugar só para afinar) e a fase de cada botão.
+     `--fase` é herdado: desloca o botão E o ícone dele juntos, para vários
+     botões na mesma página não pulsarem em uníssono. */
+  --pulso: 3.4s;
+  --fase: 0s;
 }
 
 .typst-btn {
@@ -14,19 +20,81 @@
   padding: 0.6rem 1.1rem;
   border: 1px solid var(--accent);
   border-radius: var(--radius);
-  background: var(--accent-soft);
+  background-color: var(--accent-soft);
   color: var(--text);
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition),
+    transform var(--transition), box-shadow var(--transition);
+
+  /* Convite ao clique, 100% em CSS (nada no cliente):
+     `typst-cores`  — borda + tinta + halo passeiam pelas três cores de acento do
+                      design system (azul → violeta → ciano, as mesmas do realce de
+                      sintaxe), em dois tempos do pulso;
+     `typst-brilho` — um reflexo atravessa o botão de vez em quando.
+     O halo é clarão de cor (luz), não profundidade: a regra "nunca sombra"
+     de `assets/styles/tokens.css` continua valendo — nada aqui finge elevação. */
+  background-image: linear-gradient(100deg, transparent 40%, rgba(255, 255, 255, 0.28) 50%, transparent 60%);
+  background-size: 240% 100%;
+  background-repeat: no-repeat;
+  animation:
+    typst-cores calc(var(--pulso) * 2) ease-in-out infinite,
+    typst-brilho calc(var(--pulso) * 1.35) ease-in-out infinite;
+  animation-delay: var(--fase);
 }
 
-.typst-btn:hover {
-  background: var(--accent);
+@keyframes typst-cores {
+  0%,
+  100% {
+    border-color: #7aa2f7;
+    background-color: rgba(122, 162, 247, 0.12);
+    box-shadow: 0 0 18px -8px rgba(122, 162, 247, 0.55);
+  }
+  33% {
+    border-color: #bb9af7;
+    background-color: rgba(187, 154, 247, 0.14);
+    box-shadow: 0 0 26px -2px rgba(187, 154, 247, 0.7);
+  }
+  66% {
+    border-color: #7dcfff;
+    background-color: rgba(125, 207, 255, 0.14);
+    box-shadow: 0 0 22px -5px rgba(125, 207, 255, 0.65);
+  }
+}
+
+/* Reflexo: atravessa nos primeiros 28% do ciclo e depois fica parado fora do
+   botão (130% = fora à esquerda, 0% = fora à direita; a emenda do loop não
+   aparece porque nas duas pontas ele está invisível). */
+@keyframes typst-brilho {
+  0% {
+    background-position: 0% 0;
+  }
+  28%,
+  100% {
+    background-position: 130% 0;
+  }
+}
+
+/* Hover, foco e feedback (gerando / ok / erro) desligam o convite: quem já
+   chegou no botão não precisa mais ser chamado, e o resultado do clique nunca
+   compete com a animação. */
+.typst-btn:hover,
+.typst-btn:focus-visible,
+.typst-btn[aria-busy="true"],
+.typst-btn--ok,
+.typst-btn--erro {
+  animation: none;
+  background-image: none;
+}
+
+.typst-btn:hover,
+.typst-btn:focus-visible {
+  background-color: var(--accent);
   color: #0b0d10;
   transform: translateY(-1px);
+  box-shadow: 0 0 22px -6px rgba(122, 162, 247, 0.5);
 }
 
 .typst-btn[aria-busy="true"] {
@@ -49,4 +117,45 @@
 .typst-btn__icon {
   font-size: 1.1em;
   line-height: 1;
+  /* O ícone respira no ritmo do pulso, sincronizado com o halo do botão. */
+  animation: typst-icone var(--pulso) ease-in-out infinite;
+  animation-delay: var(--fase);
+}
+
+.typst-btn:hover .typst-btn__icon,
+.typst-btn:focus-visible .typst-btn__icon,
+.typst-btn[aria-busy="true"] .typst-btn__icon,
+.typst-btn--ok .typst-btn__icon,
+.typst-btn--erro .typst-btn__icon {
+  animation: none;
+}
+
+@keyframes typst-icone {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.13);
+  }
+}
+
+/* Três botões na mesma página: fora de fase, para não piscarem juntos.
+   (Funciona também no ícone, que herda `--fase`.) */
+.typst-btn:nth-child(3n + 2) {
+  --fase: calc(var(--pulso) / -3);
+}
+
+.typst-btn:nth-child(3n) {
+  --fase: calc(var(--pulso) / -3 * 2);
+}
+
+/* Quem pediu menos movimento recebe o botão parado — ele continua com borda e
+   tinta de acento (o convite visual fica), só não se mexe. */
+@media (prefers-reduced-motion: reduce) {
+  .typst-btn,
+  .typst-btn__icon {
+    animation: none;
+    background-image: none;
+  }
 }

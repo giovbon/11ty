@@ -228,8 +228,9 @@ Sem isso os `---` do frontmatter viram separadores e produzem **slides vazios no
 ### 6.4 Typst (exercício compilado no navegador)
 
 **Entrada**: `typst`.
-**Build**: um botão por item (`data-path` = `/static/<path>`, `data-name`), dentro de `.typst-container` com `data-bundle` e `data-wasm` do `static/lib/typst/`.
-**Cliente**: usar o compilador Typst WASM vendorizado (`snippet.bundle.mjs` + `typst_ts_web_compiler_bg.wasm`) para compilar o `.typ` escolhido, exibir preview e oferecer download do arquivo. Copie `quartz/static/lib/typst/**` inteiro.
+**Build**: um botão por item (`data-typ` = URL do `.typ` já com o prefixo da base, `data-name` = rótulo), dentro de `.typst` com `data-bundle` e `data-wasm` do `static/lib/typst/`.
+**Cliente**: usar o compilador Typst WASM vendorizado (`snippet.bundle.mjs` + `typst_ts_web_compiler_bg.wasm`) para compilar o `.typ` escolhido e baixar o PDF (o wasm de ~28 MB só desce no primeiro clique e fica memoizado). Copie `quartz/static/lib/typst/**` inteiro.
+**Convite ao clique** (só CSS, em `components/typst/styles.css`): o botão pulsa pela tripla de acento (azul → violeta → ciano, as cores do realce de sintaxe) com um halo clarão da cor do momento, e um reflexo atravessa o botão a cada ~4,5 s; o ícone respira junto. Com vários botões na página, `--fase` (via `nth-child`) os desalinha. Hover, `:focus-visible` e os estados de feedback (`aria-busy`, `--ok`, `--erro`) desligam a animação — o resultado do clique nunca compete com o convite — e `prefers-reduced-motion: reduce` entrega o botão parado (borda + tinta de acento continuam). O halo é cor/luz, não elevação: a regra "profundidade é borda 1px + espaço, nunca sombra" segue de pé.
 
 ### 6.5 CodeExplorer (`.zcode`)
 
