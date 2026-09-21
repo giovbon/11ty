@@ -25,6 +25,10 @@ const OPCOES = {
   // Aqui o enquadramento é nosso: uma vez no primeiro render (e em resize/fullscreen).
   autoFit: false,
   duration: 0,
+  // `pan` (ligado por padrão) é só o listener de `wheel` que o markmap registra para
+  // *arrastar* o mapa com a roda — somado ao `wheel` do d3-zoom (que amplia), cada
+  // entrelinha da roda andava E ampliava. A roda é nossa: `ligarZoomComRoda`.
+  pan: false,
   paddingX: 20,
 }
 
@@ -71,10 +75,10 @@ function adicionarControles(container, markmap) {
   }
 
   controles.append(
-    // `rescale`/`fit` da lib terminam em transição do d3 (rAF): aqui o zoom é aplicado
-    // direto, igual ao arrasto, para não depender de animação para funcionar.
-    botao("➕", "Aumentar zoom", () => markmap.zoom.scaleBy(markmap.svg, 1.25)),
-    botao("➖", "Diminuir zoom", () => markmap.zoom.scaleBy(markmap.svg, 0.8)),
+    // `rescale`/`fit`/`scaleBy` da lib terminam em transição do d3 (rAF): aqui o zoom é
+    // aplicado direto, igual à roda e ao arrasto, e dentro da faixa permitida (`escalar`).
+    botao("➕", "Aumentar zoom", () => escalar(markmap, markmap.svg.node(), FATOR_DO_BOTAO)),
+    botao("➖", "Diminuir zoom", () => escalar(markmap, markmap.svg.node(), 1 / FATOR_DO_BOTAO)),
     botao("🎯", "Centralizar", () => enquadrar(markmap, markmap.svg.node())),
     botao("⛶", "Tela cheia", () => {
       if (!document.fullscreenElement) container.requestFullscreen?.()
@@ -96,6 +100,39 @@ const INTERVALO_DE_QUADRO = 16 // ms: no máximo um `transform` por quadro
 const ESCALA_MAXIMA_INICIAL = 2
 const PROPORCAO_DE_ENQUADRAMENTO = 0.95
 
+// Faixa de zoom: o enquadramento (mapa todo visível) é o mínimo e `FAIXA_DE_ZOOM`
+// vezes ele, o máximo. `FAIXA_DE_ZOOM_PADRAO` vale antes do primeiro enquadramento.
+const FAIXA_DE_ZOOM = 6
+const FAIXA_DE_ZOOM_PADRAO = [0.2, 8]
+const FATOR_DO_BOTAO = 1.25 // ➕/➖
+
+// Passo da roda: o mesmo `wheelDelta` padrão do d3-zoom (`2 ** (-deltaY * 0.002)`).
+const FATOR_DA_RODA = 0.002
+const ESCALA_MAXIMA_DA_RODA = 2 // por evento: trava "picos" (eventos coalescidos)
+const ESCALA_MINIMA_DA_RODA = 0.5
+const PX_DE_LINHA = 16 // `deltaMode` 1 (linhas)
+const PX_DE_PAGINA = 100 // `deltaMode` 2 (páginas)
+
+/**
+ * Escala em que o mapa inteiro cabe na caixa (mesma conta do `fit()` da lib).
+ *
+ * `null` enquanto a lib não terminou o primeiro layout (`state.rect` ainda vazio) ou
+ * quando a caixa tem tamanho zero (mapa em aba oculta, por exemplo).
+ */
+function escalaDeEnquadramento(markmap, svg) {
+  const { width, height } = svg.getBoundingClientRect()
+  const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = markmap.state?.rect ?? {}
+  const naturalLargura = x2 - x1
+  const naturalAltura = y2 - y1
+  if (width <= 0 || height <= 0 || naturalLargura <= 0 || naturalAltura <= 0) return null
+
+  return Math.min(
+    (width / naturalLargura) * PROPORCAO_DE_ENQUADRAMENTO,
+    (height / naturalAltura) * PROPORCAO_DE_ENQUADRAMENTO,
+    ESCALA_MAXIMA_INICIAL,
+  )
+}
+
 /**
  * Enquadra o mapa aplicando o `transform` direto, **sem transição**.
  *
@@ -106,26 +143,78 @@ const PROPORCAO_DE_ENQUADRAMENTO = 0.95
  * determinístico; `interrupt()` mata qualquer `fit`/zoom animado que tenha ficado pendente.
  */
 function enquadrar(markmap, svg) {
-  const { width, height } = svg.getBoundingClientRect()
-  const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = markmap.state?.rect ?? {}
-  const naturalLargura = x2 - x1
-  const naturalAltura = y2 - y1
-  if (width <= 0 || height <= 0 || naturalLargura <= 0 || naturalAltura <= 0) return false
-
+  const escala = escalaDeEnquadramento(markmap, svg)
   const identidade = window.d3?.zoomIdentity
-  if (!identidade) return false
+  if (!escala || !identidade) return false
 
-  const escala = Math.min(
-    (width / naturalLargura) * PROPORCAO_DE_ENQUADRAMENTO,
-    (height / naturalAltura) * PROPORCAO_DE_ENQUADRAMENTO,
-    ESCALA_MAXIMA_INICIAL,
-  )
+  const { width, height } = svg.getBoundingClientRect()
+  const { x1 = 0, y1 = 0, x2 = 0, y2 = 0 } = markmap.state.rect
   const transform = identidade
-    .translate((width - naturalLargura * escala) / 2 - x1 * escala, (height - naturalAltura * escala) / 2 - y1 * escala)
+    .translate((width - (x2 - x1) * escala) / 2 - x1 * escala, (height - (y2 - y1) * escala) / 2 - y1 * escala)
     .scale(escala)
 
   markmap.svg.interrupt().call(markmap.zoom.transform, transform)
+  // o d3 ainda cuida de `dblclick`/toque: que ele não saia da mesma faixa
+  markmap.zoom.scaleExtent(faixaDeZoom(markmap, svg, escala))
   return true
+}
+
+/**
+ * Faixa de zoom permitida: `[enquadramento, enquadramento * FAIXA_DE_ZOOM]`.
+ *
+ * Sem faixa, a roda era livre: cada entrelinha multiplica a escala por
+ * `2 ** (-deltaY * 0.002)` e uma rolagem de mouse comum (dezenas de eventos) levava o
+ * mapa de ~0,9× para **mais de 1000×** — o mapa virava uma mancha gigante; rolando para
+ * o outro lado, ele sumia num ponto. Não se volta de nenhum dos dois rolando.
+ *
+ * É calculada na hora (não guardada) para acompanhar o tamanho da caixa; `kAtual` nunca
+ * é "puxado" para dentro da faixa, para um reenquadramento pendente não dar salto.
+ */
+function faixaDeZoom(markmap, svg, kAtual = 1) {
+  const escala = escalaDeEnquadramento(markmap, svg)
+  if (!escala) return [...FAIXA_DE_ZOOM_PADRAO]
+  return [Math.min(escala, kAtual), Math.max(escala * FAIXA_DE_ZOOM, kAtual)]
+}
+
+/**
+ * Amplia em torno de um ponto da tela, dentro da faixa permitida e **sem transição**
+ * (transição do d3 depende de `requestAnimationFrame`: em aba de fundo não aplica).
+ *
+ * `ancora` é em coordenadas de cliente (como o `clientX/Y` do evento); sem ela, o zoom
+ * sai do centro da caixa. O ponto do conteúdo sob a âncora fica parado — a mesma conta
+ * do d3-zoom (`translate(p).scale(k).translate(-p_no_conteudo)`).
+ */
+function escalar(markmap, svg, fator, ancora) {
+  const identidade = window.d3?.zoomIdentity
+  const atual = markmap.svg.property("__zoom")
+  if (!identidade || !atual) return false
+
+  const [minimo, maximo] = faixaDeZoom(markmap, svg, atual.k)
+  const escala = Math.min(Math.max(atual.k * fator, minimo), maximo)
+  if (escala === atual.k) return false
+
+  const caixa = svg.getBoundingClientRect()
+  const x = ancora ? ancora[0] - caixa.left : caixa.width / 2
+  const y = ancora ? ancora[1] - caixa.top : caixa.height / 2
+  const conteudo = atual.invert([x, y])
+
+  const transform = identidade.translate(x - conteudo[0] * escala, y - conteudo[1] * escala).scale(escala)
+  markmap.svg.interrupt().call(markmap.zoom.transform, transform)
+  return true
+}
+
+/**
+ * Tira do d3-zoom os gestos que nós mesmos fazemos: o arrasto de mouse e a roda.
+ *
+ * O d3 continua dono do `zoom.transform` (é ele que escreve o `transform` do `<g>` e
+ * emite os eventos `zoom` que o markmap escuta) e dos gestos que não tratamos
+ * (`dblclick`, toque).
+ */
+function desligarGestosDoD3(markmap) {
+  const NOSSOS = new Set(["mousedown", "wheel"])
+  const filtro = markmap.zoom.filter()
+  const valido = typeof filtro === "function" ? filtro : () => true
+  markmap.zoom.filter((evento, ...resto) => (NOSSOS.has(evento.type) ? false : valido(evento, ...resto)))
 }
 
 /**
@@ -144,13 +233,6 @@ function enquadrar(markmap, svg) {
  */
 function ligarArrasto(svg, markmap, container, aoPegar) {
   const selecao = markmap.svg
-
-  // O d3-zoom continua cuidando da roda (zoom) e do toque (pan); o mouse é nosso.
-  const filtroDaqui = markmap.zoom.filter()
-  const filtroValido = typeof filtroDaqui === "function" ? filtroDaqui : () => true
-  markmap.zoom.filter((evento, ...resto) =>
-    evento.type === "mousedown" ? false : filtroValido(evento, ...resto),
-  )
 
   let gesto = null
   let agendado = 0
@@ -230,6 +312,75 @@ function ligarArrasto(svg, markmap, container, aoPegar) {
 }
 
 /**
+ * Zoom pela roda do mouse — nosso, não do d3-zoom.
+ *
+ * O que a roda fazia antes (medido: 50 eventos = uma rolagem de mouse levavam o mapa de
+ * 0,9× para 1062×):
+ *  - o d3-zoom aplica a roda numa **transição** (`duration` 250 ms) e com o `scaleExtent`
+ *    padrão (`[0, ∞]`), escrevendo o `transform` — repintura do SVG inteiro — a cada
+ *    quadro da animação;
+ *  - o markmap também escuta `wheel` no mesmo `<svg>` (`options.pan`, ligado por padrão)
+ *    para *arrastar* o mapa, então cada entrelinha andava e ampliava ao mesmo tempo.
+ *
+ * Aqui: um caminho só, sem transição, dentro da faixa de zoom (`escalar`) e no máximo
+ * **uma escrita por quadro** — a mesma técnica do arrasto.
+ *
+ * A roda continua não rolando a página quando o ponteiro está sobre o mapa (é o
+ * comportamento que o site já tinha); rolagem horizontal (`deltaY` zero) passa direto.
+ */
+function ligarZoomComRoda(svg, markmap, aoUsarARoda) {
+  let fator = 1
+  let ancora = null
+  let agendado = 0
+  let ultimoAplicado = 0
+
+  function aplicar() {
+    agendado = 0
+    if (fator === 1) return
+    const acumulado = fator
+    fator = 1
+    escalar(markmap, svg, acumulado, ancora)
+    ultimoAplicado = performance.now()
+  }
+
+  function agendar() {
+    const decorrido = performance.now() - ultimoAplicado
+    if (decorrido >= INTERVALO_DE_QUADRO) {
+      aplicar()
+      return
+    }
+    if (!agendado) agendado = window.setTimeout(aplicar, INTERVALO_DE_QUADRO - decorrido)
+  }
+
+  svg.addEventListener(
+    "wheel",
+    (evento) => {
+      if (!evento.deltaY) return // roda "horizontal"/trackpad de lado: deixa a página rolar
+
+      evento.preventDefault()
+      aoUsarARoda?.()
+
+      const px =
+        evento.deltaMode === 1
+          ? evento.deltaY * PX_DE_LINHA
+          : evento.deltaMode === 2
+            ? evento.deltaY * PX_DE_PAGINA
+            : evento.deltaY
+      // ctrl+roda é o gesto de pinça do trackpad: passos pequenos, então valem ×10 (como no d3-zoom)
+      const passo = Math.min(
+        ESCALA_MAXIMA_DA_RODA,
+        Math.max(ESCALA_MINIMA_DA_RODA, 2 ** (-px * FATOR_DA_RODA * (evento.ctrlKey ? 10 : 1))),
+      )
+
+      fator *= passo
+      ancora = [evento.clientX, evento.clientY]
+      agendar()
+    },
+    { passive: false },
+  )
+}
+
+/**
  * Enquadra assim que o primeiro layout sai e para no primeiro sucesso.
  *
  * A janela de espera é generosa de propósito: o render da lib é assíncrono (passa por rAF)
@@ -285,10 +436,21 @@ async function renderizarMapa(container) {
 
   const { root } = new Transformer().transform(markdown)
   const markmap = Markmap.create(svg, OPCOES, root)
+  markmap.zoom.scaleExtent([...FAIXA_DE_ZOOM_PADRAO]) // faixa provisória, até o 1º enquadramento
 
   const pendente = { enquadramento: true }
-  ligarArrasto(svg, markmap, container, () => {
+  const assumir = () => {
     pendente.enquadramento = false
+  }
+
+  desligarGestosDoD3(markmap)
+  ligarArrasto(svg, markmap, container, assumir)
+  ligarZoomComRoda(svg, markmap, () => {
+    // Roda antes do primeiro enquadramento: enquadra na hora, para o giro sair do mapa
+    // enquadrado e não da posição crua do primeiro layout. Se o enquadramento ainda não
+    // é possível, o pendente continua valendo — melhor o mapa se enquadrar sozinho do
+    // que ficar desenquadrado.
+    if (pendente.enquadramento && enquadrar(markmap, svg)) assumir()
   })
   adicionarControles(container, markmap)
   enquadrarAoMudarDeTamanho(markmap, svg)

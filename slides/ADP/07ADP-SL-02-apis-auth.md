@@ -19,6 +19,10 @@ Eles utilizam o modelo padrão de autenticação por Token (JWT), onde o Xano se
 
 ---
 
+## `auth/signup`
+
+--
+
 O endpoint de `auth/signup` (**Cadastro**) é a porta de entrada para *novos usuários* na sua aplicação. Ele recebe as informações iniciais, como nome, e-mail e senha. O papel fundamental dessa API é pegar a *senha* fornecida, *criptografá-la de forma segura e salvar o novo registro na tabela user do banco de dados*. Para melhorar a experiência do usuário, logo após criar a conta com sucesso essa API já devolve um token JWT (authToken) para que o usuário seja logado automaticamente, sem precisar passar pela tela de login logo em seguida.
 
 
@@ -28,6 +32,10 @@ O endpoint de `auth/signup` (**Cadastro**) é a porta de entrada para *novos usu
 
 ---
 
+## `auth/login`
+
+--
+
 O endpoint `auth/login` (**Entrar**) é utilizado quando um usuário que já possui conta deseja *acessar a aplicação novamente*. Ele recebe as credenciais (geralmente e-mail e senha), *vai até a tabela user e verifica se o e-mail existe e se a senha fornecida, após passar pelo algoritmo de verificação, corresponde àquela que está criptografada no banco de dados*. Se tudo estiver correto, o Xano gera e devolve um token JWT (authToken). Esse token funciona como um "crachá de acesso" digital, temporário e inviolável, que o usuário usará para provar quem ele é nas próximas requisições.
 
 <div style="text-align: center;">
@@ -35,6 +43,10 @@ O endpoint `auth/login` (**Entrar**) é utilizado quando um usuário que já pos
 </div>
 
 ---
+
+## `auth/me`
+
+--
 
 o endpoint `auth/me` (**Autenticação**) exige que o authToken (o token JWT) seja anexado e enviado no cabeçalho (header) da requisição. Quando o Xano recebe a chamada, ele valida se o token não expirou e não foi adulterado, e descriptografa a assinatura para descobrir o ID do usuário. Ele serve principalmente como a etapa de *validação e liberação para acessar APIs restritas*. Ao confirmar a validade da sessão através do `auth/m`e e carregar as permissões do usuário, o front-end garante que aquele "crachá" está ativo e tem autorização para ser usado nas próximas requisições.
 

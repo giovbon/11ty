@@ -214,11 +214,16 @@ Sem isso os `---` do frontmatter viram separadores e produzem **slides vazios no
 **Build**: ler o arquivo, remover frontmatter e embutir:
 
 ```html
-<div class="markmap-container"><script type="text/markdown"># ...conteúdo...</script></div>
+<div class="markmap"><script type="text/markdown"># ...conteúdo...</script></div>
 ```
 
-**Cliente**: carregar markmap (`d3`, `markmap-view`, `markmap-lib`), transformar o markdown embutido e renderizar em `<svg>`; **não** fazer `fetch` para fontes locais (só para fontes `http(s)`), e marcar o elemento como inicializado para não renderizar duas vezes.
-Recomendação: vendorizar as três libs em `static/lib/markmap/` em vez de usar CDN (hoje é CDN).
+**Cliente**: carregar markmap (`d3`, `markmap-view`, `markmap-lib` vendorizadas em `static/lib/markmap/`), transformar o markdown embutido e renderizar em `<svg>`; **não** fazer `fetch` para fontes locais (só para fontes `http(s)`).
+
+**Navegação** — o d3-zoom sozinho não serve para um mapa embutido numa página que rola:
+- arrasto de mouse e roda são do componente, não do d3-zoom: `markmap.zoom.filter` recusa `mousedown`/`wheel` e `pan: false` remove o listener de roda do markmap (que, por padrão, *arrastava* o mapa com a roda — cada entrelinha andava e ampliava ao mesmo tempo);
+- o `transform` é aplicado direto, **sem transição** (transição do d3 depende de `requestAnimationFrame` e não aplica em aba de fundo) e no máximo **uma vez por quadro**;
+- o zoom tem faixa: do enquadramento (mapa inteiro visível) até `6×` ele. Sem isso, uma rolagem de roda levava o mapa de ~0,9× a mais de 1000× (e, para o outro lado, sumia num ponto);
+- ➕ / ➖ / 🎯 / ⛶ usam a mesma conta (`escalar`/`enquadrar`), sem animação.
 
 ### 6.4 Typst (exercício compilado no navegador)
 

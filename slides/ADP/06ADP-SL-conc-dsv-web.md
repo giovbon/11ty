@@ -1,7 +1,7 @@
 <!-- .slide: class="slide-cover" -->
 <p class="slide-cover__kicker">ADP · Application Data Persistance</p>
 
-# Desenvolvimento Web
+# Conceitos de Desenvolvimento Web
 
 <p class="slide-cover__rule"></p>
 <p class="slide-cover__sub"></p>
@@ -43,16 +43,17 @@ Essa arquitetura é base para aplicações web modernas, promovendo separação 
 A **comunicação request-response** é um modelo fundamental para a *comunicação entre computadores*, em que um cliente envia uma solicitação a um servidor, e o servidor envia uma resposta de volta ao cliente. Esse padrão é usado em protocolos de rede como HTTP.
 
 <div style="text-align: center;">
-	<img src="https://darvishdarab.github.io/cs421_f20/assets/images/client-server-1-d85a93ea16590c10bed340dd78294d0d.png" width="30%" data-preview-image>
-	<img src="../zSLIDES/img/request_response.png" width="50%" data-preview-image>
+	<img src="https://i.ibb.co/p6TSsfhm/image.png" width="60%" data-preview-image>
 </div>
 
----
+--
 
 Esse padrão de comunicação é uma *comunicação síncrona* e baseada em ciclos independentes, ou seja, o servidor só responde quando solicitado, e cada troca de mensagem é completa em si. Esse padrão é a *base da interação entre front-end e back-end em aplicações web modernas*.
 
+---
+
 <div style="text-align: center;">
-	<img src="../zSLIDES/img/request_response_front_back.png" width="50%" data-preview-image>
+	<img src="https://i.ibb.co/bMpdqLp1/image.png" width="60%" data-preview-image>
 </div>
 
 ---
@@ -67,6 +68,12 @@ Esse padrão de comunicação é uma *comunicação síncrona* e baseada em cicl
 * **Headers (Cabeçalhos):** Contêm metadados de configuração, como a origem da requisição e o tipo de conteúdo enviado.
 * **Body (Corpo):** É onde os dados complexos são enviados, geralmente estruturados em formato JSON. No Xano, esses dados são tratados como Inputs.
 
+--
+
+<div style="text-align: center;">
+	<img src="https://www.cloud4y.ru/upload/medialibrary/4c0/hn5x5w7tx2pa0t3m1us71vh51dthf4kg/2.jpg" width="70%" data-preview-image>
+</div>
+
 ---
 
 ### Resposta
@@ -76,6 +83,12 @@ Esse padrão de comunicação é uma *comunicação síncrona* e baseada em cicl
 * **Status Code (Código de Status):** Indica o resultado da operação, diz se o pedido foi bem-sucedido (ex: `200` OK) ou se houve erro (ex: `404` Não Encontrado).
 * **Headers:** Assim como na requisição, trazem informações técnicas sobre a resposta enviada pelo servidor.
 * **Body (JSON, HTML, etc.):** É o conteúdo principal da resposta. No desenvolvimento com Xano, o padrão é o JSON, que entrega os dados solicitados (como o nome de um usuário ou uma lista de produtos) de forma organizada.
+
+--
+
+<div style="text-align: center;">
+	<img src="https://www.azion.com/assets/content/learning/uploads/http-response-body-pt.png" width="70%" data-preview-image>
+</div>
 
 ---
 
@@ -102,7 +115,7 @@ A localização de recursos no protocolo HTTP é realizada através das URLs (Un
 - **`com`**: representa a categoria company (empresa), `gov`, por exemplo, diz respeito a governos. 
 - **`br`**: pais da aplicação
 
----
+--
 
 `http://www.loja.com.br:80/musica/cd.php?id=37&sessao=AB7#detalhes`
 
@@ -229,5 +242,5 @@ Em resumo, o Swagger facilita:
 No Swagger podemos ver uma lista de endpoints (pontos de acesso) da API:
 
 <div style="text-align: center;">
-	<img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.sstatic.net%2F173dI.png&f=1&nofb=1&ipt=6b71e65e2128a198dc766cc9b68880b4612afd3ad5cfbd36d30ffa6cdd5507b2" width="50%" data-preview-image>
-</div>ssss
+	<img src="https://imagedelivery.net/PVooPtpJE-25QaNkbEuXvw/0117d73b-b327-45ff-f333-0af511c52b00/public" width="70%" data-preview-image>
+</div>
