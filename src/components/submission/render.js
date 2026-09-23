@@ -118,7 +118,7 @@ function renderFormulario(atividade, multiplas) {
               <span class="file-name-display">Nenhum arquivo selecionado</span>
               <button type="button" class="clear-file-btn" title="Remover arquivo">${ICONE.fechar}</button>
             </div>
-            <small class="file-hint">Somente .zip com conteúdo (Máx. 20MB) — PDF, .py, .rar, .7z e ZIP vazio são recusados. 🚨 NÃO ENVIE PASTAS COM DEPENDÊNCIAS DO PROJETO INSTALADAS (ex: pasta .venv ou node_modules). ⚠️ NÃO ENVIE JUNTO A ATIVIDADE MISTURADA COM AS ANTERIORES OU UM REPO COM VÁRIAS ATIVIDADES. A não observância dessas regras representará desconto de nota.</small>
+            <small class="file-hint">Somente .zip com conteúdo (Máx. 20MB) — PDF, .py, .rar, .7z e ZIP vazio são recusados. 🚨 NÃO ENVIE PASTAS COM DEPENDÊNCIAS DO PROJETO INSTALADAS (ex: pasta .venv ou node_modules). ⚠️ NÃO ENVIE A ATIVIDADE MISTURADA COM AS ENTREGAS ANTERIORES OU UM REPO COM VÁRIAS ATIVIDADES MISTURADAS. A não observância dessas regras representará desconto de nota.</small>
           </div>
         </div>
 
