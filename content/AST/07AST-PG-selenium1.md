@@ -30,7 +30,9 @@ python -m venv .venv
 pip install selenium webdriver-manager pytest
 ```
 
-*Chrome*
+Caso seu pc bloqueie a execução do python (mensagem vermelha no terminal) execute: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` 
+
+Script que instala o driver do google chrome:
 
 ```py
 # Importa as ferramentas principais para controle e navegação
