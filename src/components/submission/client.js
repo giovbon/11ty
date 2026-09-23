@@ -173,6 +173,15 @@ function initCard(card) {
   const backBtn = card.querySelector(".back-to-selection")
   const activityHighlight = card.querySelector(".highlight-activity")
 
+  // A página oferece escolha quando o frontmatter declarou 2+ atividades — é o
+  // mesmo sinal que o `renderSubmission` usa para montar a tela de escolha.
+  const paginaComEscolha = selectButtons.length > 1
+
+  // O aluno já clicou numa atividade da lista? `sincronizarAtividades()`
+  // responde depois e não pode puxar de volta para a escolha quem já escolheu
+  // (ele pode estar digitando o RA).
+  let escolhaDoUsuario = false
+
   /* ── atividade encerrada (ativo = FALSE na aba "Atividades") ── */
   // O backend grava a entrega mesmo com a atividade desativada, então quem barra
   // é o front. Só vale quando a planilha respondeu: se `listarAtividades` falhar,
@@ -290,6 +299,7 @@ function initCard(card) {
 
   /* ── escolha de atividade ── */
   async function onActivitySelected(atividade) {
+    escolhaDoUsuario = true
     form.setAttribute("data-activity", atividade)
     if (activityHighlight) activityHighlight.textContent = atividade
 
@@ -338,63 +348,90 @@ function initCard(card) {
 
   /* ── lista canônica de atividades (aba "Atividades") ── */
   async function sincronizarAtividades() {
-    const fallback = Array.from(selectButtons)
+    const declaradas = Array.from(selectButtons)
       .map((botao) => botao.getAttribute("data-activity") || "")
       .filter((valor) => valor.trim().length > 0)
 
-    const codigos = new Set(fallback.map((valor) => valor.trim().split(/\s+/)[0].toUpperCase()))
+    // O 1º token do frontmatter é a whitelist: a planilha decide quais linhas
+    // pertencem à página (inclusive turmas que o professor cadastra depois).
+    const codigos = new Set(declaradas.map(codigoDaAtividade))
     if (codigos.size === 0) return
 
-    const lista = []
+    let linhas
     try {
       const resposta = await getFromGAS(SCRIPT_URL, { action: "listarAtividades" })
       if (!resposta || resposta.result !== "success" || !Array.isArray(resposta.atividades)) return
-
-      const vistos = new Set()
-      for (const item of resposta.atividades) {
-        const nome = String(item?.atividade ?? "").trim()
-        if (!nome) continue
-        if (!codigos.has(codigoDaAtividade(nome))) continue
-        if (item?.ativo === false || String(item?.ativo).toLowerCase() === "false") {
-          encerradas.set(normalizarAtividade(nome), nome)
-          continue
-        }
-        const chave = nome.toLowerCase()
-        if (vistos.has(chave)) continue
-        vistos.add(chave)
-        lista.push(nome)
-      }
+      linhas = resposta.atividades
     } catch {
       return // consulta indisponível → mantém o rótulo do frontmatter
     }
 
-    if (lista.length === 0) {
-      // Nada ativo casou com o frontmatter. Se a atividade declarada é justamente
-      // a desativada, encerra em vez de deixar o formulário do frontmatter valendo.
+    // Opções na ordem da planilha, sem repetir nome — ativas e encerradas.
+    // Se a planilha repetir o mesmo nome em duas linhas, "encerrada" vence
+    // (bloquear é mais seguro do que liberar entrega numa atividade morta).
+    const porNome = new Map()
+    for (const item of linhas) {
+      const nome = String(item?.atividade ?? "").trim()
+      if (!nome || !codigos.has(codigoDaAtividade(nome))) continue
+
+      const chave = normalizarAtividade(nome)
+      const daLinha = !(item?.ativo === false || String(item?.ativo).toLowerCase() === "false")
+      const anterior = porNome.get(chave)
+      if (anterior) anterior.ativa = anterior.ativa && daLinha
+      else porNome.set(chave, { nome, ativa: daLinha })
+    }
+
+    const opcoes = Array.from(porNome.values())
+    for (const opcao of opcoes) {
+      if (!opcao.ativa) encerradas.set(normalizarAtividade(opcao.nome), opcao.nome)
+    }
+
+    const ativas = opcoes.filter((opcao) => opcao.ativa)
+    const activityList = card.querySelector(".activity-list")
+    const template = activityList?.querySelector(".select-activity-btn")
+
+    // Tela de escolha: a página declara 2+ atividades (o aluno escolhe, sempre)
+    // ou a planilha abriu mais de uma para o mesmo código. A lista mostra também
+    // as encerradas, com selo — escondê-las deixava o aluno da turma desativada
+    // sem entender para onde a atividade dele foi.
+    const mostrarEscolha =
+      Boolean(activityList && template) &&
+      opcoes.length > 0 &&
+      (paginaComEscolha || ativas.length > 1)
+
+    if (mostrarEscolha) {
+      activityList.innerHTML = ""
+      for (const opcao of opcoes) {
+        const clone = template.cloneNode(true)
+        clone.setAttribute("data-activity", opcao.nome)
+        const rotulo = clone.querySelector(".act-name")
+        if (rotulo) rotulo.textContent = opcao.nome
+        if (!opcao.ativa) {
+          clone.classList.add("is-closed")
+          const selo = document.createElement("span")
+          selo.className = "act-badge"
+          selo.textContent = "encerrada"
+          clone.insertBefore(selo, clone.querySelector("svg"))
+        }
+        activityList.appendChild(clone)
+      }
+      backBtn?.classList.remove("hidden")
+      if (!escolhaDoUsuario) {
+        form.setAttribute("data-activity", "")
+        selectionScreen?.classList.remove("hidden")
+        formScreen?.classList.add("hidden")
+      }
+      return
+    }
+
+    if (ativas.length === 0) {
+      // 1 atividade declarada e ela está desativada (ou nada da planilha casou):
+      // encerra em vez de deixar o formulário do frontmatter valendo.
       if (estaEncerrada(form.getAttribute("data-activity"))) bloquearEntrega()
       return
     }
 
-    const activityList = card.querySelector(".activity-list")
-    const template = activityList?.querySelector(".select-activity-btn")
-
-    if (lista.length > 1 && activityList && template) {
-      activityList.innerHTML = ""
-      for (const nome of lista) {
-        const clone = template.cloneNode(true)
-        clone.setAttribute("data-activity", nome)
-        const rotulo = clone.querySelector(".act-name")
-        if (rotulo) rotulo.textContent = nome
-        activityList.appendChild(clone)
-      }
-      form.setAttribute("data-activity", "")
-      backBtn?.classList.remove("hidden")
-      selectionScreen?.classList.remove("hidden")
-      formScreen?.classList.add("hidden")
-      return
-    }
-
-    const nome = lista[0]
+    const nome = ativas[0].nome
     const atual = form.getAttribute("data-activity") || ""
     form.setAttribute("data-activity", nome)
     if (activityHighlight) activityHighlight.textContent = nome

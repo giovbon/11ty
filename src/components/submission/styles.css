@@ -108,6 +108,28 @@
   flex: none;
 }
 
+.submission-card .select-activity-btn .act-name {
+  flex: 1 1 auto;
+}
+
+/* Atividade encerrada (ativo = FALSE): continua clicável — ao escolher, aparece
+   o aviso de encerrada e o botão de voltar traz de volta para a lista. O selo
+   só tira a ambiguidade antes do clique. */
+.submission-card .select-activity-btn.is-closed .act-name {
+  color: var(--muted);
+}
+
+.submission-card .act-badge {
+  flex: none;
+  padding: 1px var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* Campos */
 .submission-card .input-group + .input-group {
   margin-top: var(--s4);

@@ -261,6 +261,7 @@ Se o arquivo não existir, renderizar `<div class="code-explorer-error">Arquivo 
 10. Mensagens de erro amigáveis para: HTTP 404 do backend, resposta "já enviou nas últimas 24h" e falha de rede.
 11. Só POST para a URL de deploy do Apps Script já existente no código atual.
 12. Atividade com `ativo = FALSE` na aba "Atividades" é **encerrada**: o formulário é escondido, com aviso no lugar, e o `submit` é recusado localmente. O backend **não** checa `ativo` — quem barra é o front. Se a consulta falhar, mantém o comportamento antigo (fail-open).
+13. **Página com escolha nunca entra sozinha numa atividade (2026-09).** Com 2+ atividades no frontmatter, a tela de escolha permanece — o cliente **não** auto-entra na única ativa. A lista traz as linhas da planilha que casam com os códigos do frontmatter, inclusive as `ativo = FALSE`, marcadas com o selo "encerrada" (escolher uma delas mostra o aviso de encerrada, e o botão de voltar — visível sempre que a página tem escolha — reabre a lista). Motivo: antes, quando uma das duas estava inativa, o cliente entrava sozinho na outra → o aluno não escolhia, não tinha botão de voltar e a entrega podia ser gravada na atividade da turma errada. O auto-enter ficou só para a página de **1** atividade. Se `listarAtividades` responder depois de o aluno já ter escolhido, a tela dele não é trocada.
 
 ### 6.7 Navegação, listas e páginas
 
