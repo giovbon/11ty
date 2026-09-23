@@ -1,5 +1,5 @@
 ---
-title: Selenium 1
+title: Selenium
 presentation: "slides/AST/07AST-SL-selenium1.md"
 order: 5
 typst: 
@@ -7,6 +7,7 @@ typst:
   name: "Exercício AST07"
 submission: 
   - "AST07"
+  - "AST07 Manha"
 codes: "codes/selenium1.md"
 ---
 
