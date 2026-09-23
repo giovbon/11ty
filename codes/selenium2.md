@@ -1,4 +1,12 @@
 - /
+  - README.md
+    ```
+    Lembrando..
+    python -m venv .venv
+    .venv\Scripts\activate
+    pip install selenium webdriver-manager pytest
+
+    ```
   - .gitignore
     ```
     .venv/
