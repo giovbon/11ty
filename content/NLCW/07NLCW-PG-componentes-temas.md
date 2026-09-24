@@ -1,6 +1,6 @@
 ---
 title: Componentes e Temas
-presentation: "slides/NLCW/07NLCW-SL-componentes-temas"
+presentation: "slides/NLCW/07NLCW-SL-componentes-temas.md"
 order: 9
 ---
 
