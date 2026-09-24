@@ -67,6 +67,8 @@ Criando tema pra botão:
 
 <img src="https://i.ibb.co/ZzBWzKGS/A14-FA8-DA-8-E5-A-4-D03-AC3-A-61-C08-DD375-A0.png" width="50%" data-preview-image>
 
+--
+
 Aplicando o tema a outros botões:
 
 <img src="https://i.ibb.co/chBsFhs4/A63-D8-CC3-D6-B4-4330-86-E8-7-FECED4-ABE3-D.png" width="50%" data-preview-image>
